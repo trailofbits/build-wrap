@@ -49,7 +49,7 @@ fn main_rs(build_script_path_as_str: &str) -> Vec<u8> {
 const BYTES: &[u8] = include_bytes!("{build_script_path_as_str}");
 
 fn main() -> Result<()> {{
-    unwrap_and_exec(BYTES)
+    unpack_and_exec(BYTES)
 }}
 "#,
         )

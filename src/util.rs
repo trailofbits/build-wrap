@@ -44,7 +44,7 @@ pub fn exec(mut command: Command, require_success: bool) -> Result<Output> {
 /// Essentially the body of the wrapper build script's `main` function. Not called by `build-wrap`
 /// itself.
 #[allow(dead_code)]
-fn unwrap_and_exec(bytes: &[u8]) -> Result<()> {
+fn unpack_and_exec(bytes: &[u8]) -> Result<()> {
     let (mut file, temp_path) = NamedTempFile::new().map(NamedTempFile::into_parts)?;
 
     file.write_all(bytes)?;
@@ -53,7 +53,8 @@ fn unwrap_and_exec(bytes: &[u8]) -> Result<()> {
 
     set_permissions(&temp_path, Permissions::from_mode(0o755))?;
 
-    let s = option_env!("BUILD_WRAP_CMD").ok_or_else(|| anyhow!("`BUILD_WRAP_CMD` is undefined"))?;
+    let s =
+        option_env!("BUILD_WRAP_CMD").ok_or_else(|| anyhow!("`BUILD_WRAP_CMD` is undefined"))?;
     let args = s.split_ascii_whitespace().collect::<Vec<_>>();
     ensure!(!args.is_empty(), "`BUILD_WRAP_CMD` is empty");
 
