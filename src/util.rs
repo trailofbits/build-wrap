@@ -41,7 +41,7 @@ pub fn exec(mut command: Command, require_success: bool) -> Result<Output> {
     Ok(output)
 }
 
-/// Essentially the body of the wrapper build script's `main` function. Not called by `link-wrap`
+/// Essentially the body of the wrapper build script's `main` function. Not called by `build-wrap`
 /// itself.
 #[allow(dead_code)]
 fn unwrap_and_exec(bytes: &[u8]) -> Result<()> {
@@ -53,9 +53,9 @@ fn unwrap_and_exec(bytes: &[u8]) -> Result<()> {
 
     set_permissions(&temp_path, Permissions::from_mode(0o755))?;
 
-    let s = option_env!("LINK_WRAP_CMD").ok_or_else(|| anyhow!("`LINK_WRAP_CMD` is undefined"))?;
+    let s = option_env!("BUILD_WRAP_CMD").ok_or_else(|| anyhow!("`BUILD_WRAP_CMD` is undefined"))?;
     let args = s.split_ascii_whitespace().collect::<Vec<_>>();
-    ensure!(!args.is_empty(), "`LINK_WRAP_CMD` is empty");
+    ensure!(!args.is_empty(), "`BUILD_WRAP_CMD` is empty");
 
     let mut command = Command::new(args[0]);
     command.args(&args[1..]);

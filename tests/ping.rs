@@ -2,7 +2,7 @@ mod util;
 
 #[test]
 fn ping() {
-    let mut command = util::build_with_link_wrap();
+    let mut command = util::build_with_build_wrap();
     command.current_dir("fixtures/ping");
 
     let output = util::exec(command, false).unwrap();

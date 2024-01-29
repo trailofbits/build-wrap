@@ -2,8 +2,8 @@ mod util;
 
 #[test]
 fn dogfood() {
-    let mut command = util::build_with_link_wrap();
-    command.env("LINK_WRAP_CMD", "time -p");
+    let mut command = util::build_with_build_wrap();
+    command.env("BUILD_WRAP_CMD", "time -p");
 
     let output = util::exec(command, true).unwrap();
     let stderr = std::str::from_utf8(&output.stderr).unwrap();

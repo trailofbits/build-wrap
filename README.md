@@ -1,22 +1,22 @@
-# link-wrap
+# build-wrap
 
 Link Rust build scripts so that they are executed under another command, such as Linux's `unshare`
 
 ## Environment variables
 
-Note: These are read **when the build script is linked**. So, for example, changing `LINK_WRAP_CMD` will not change the command used to execute already linked build scripts.
+Note: These are read **when the build script is linked**. So, for example, changing `BUILD_WRAP_CMD` will not change the command used to execute already linked build scripts.
 
-- `LINK_WRAP_CMD`: Command used to execute a build script. Default: `unshare --map-root-user --net`
-- `LINK_WRAP_LD`: Linker to use. Default: `cc`
+- `BUILD_WRAP_CMD`: Command used to execute a build script. Default: `unshare --map-root-user --net`
+- `BUILD_WRAP_LD`: Linker to use. Default: `cc`
 
 ## Recommended usage
 
-1. Install `link-wrap`:
+1. Install `build-wrap`:
    ```sh
-   cargo install link-wrap
+   cargo install build-wrap
    ```
 2. In your home directory, create a `.cargo/config.toml` file with the following contents:
    ```toml
    [target.'cfg(all())']
-   linker = "link-wrap"
+   linker = "build-wrap"
    ```
