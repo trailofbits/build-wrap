@@ -17,7 +17,7 @@ pub fn cargo_build() -> Command {
     command.arg("-vv");
 
     // smoelius: Show linker output.
-    // smoelius: https://stackoverflow.com/a/71866183
+    // See: https://stackoverflow.com/a/71866183
     command.env("RUSTC_LOG", "rustc_codegen_ssa::back::link=info");
 
     command
