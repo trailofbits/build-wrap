@@ -1,3 +1,7 @@
+//! This file must remain in the tests folder to ensure that `CARGO_BIN_EXE_build-wrap` is defined
+//! at compile time.
+//! See: https://doc.rust-lang.org/cargo/reference/environment-variables.html#environment-variables-cargo-sets-for-crates
+
 use std::process::Command;
 
 #[path = "../src/util.rs"]
