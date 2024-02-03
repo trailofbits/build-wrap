@@ -7,6 +7,7 @@ use std::{
 };
 use tempfile::NamedTempFile;
 
+#[must_use]
 pub fn cargo_build() -> Command {
     let mut command = Command::new("cargo");
     command.arg("build");
@@ -22,6 +23,15 @@ pub fn cargo_build() -> Command {
     command
 }
 
+/// Executes `command`, forwards its output to stdout and stderr, and optionally checks whether
+/// `command` succeeded.
+///
+/// Called by [`unpack_and_exec`]. Since this file is included in the wrapper build script's
+/// src/main.rs file, `exec` should appear here, alongside [`unpack_and_exec`].
+///
+/// # Errors
+///
+/// If `command` cannot be executed, or if `require_success` is true and `command` failed.
 pub fn exec(mut command: Command, require_success: bool) -> Result<Output> {
     command.stdout(Stdio::piped());
     command.stderr(Stdio::piped());

@@ -4,6 +4,7 @@ use std::process::Command;
 mod main_util;
 pub use main_util::*;
 
+#[must_use]
 pub fn build_with_build_wrap() -> Command {
     let build_wrap = env!("CARGO_BIN_EXE_build-wrap");
 
