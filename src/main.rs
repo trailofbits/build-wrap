@@ -75,7 +75,7 @@ where
 fn is_build_script(path: &Path) -> bool {
     path.file_name()
         .and_then(OsStr::to_str)
-        .map_or(false, |name| name.starts_with("build_script_build-"))
+        .map_or(false, |name| name.starts_with("build_script_"))
 }
 
 fn wrap(linker: &str, build_script_path: &Path) -> Result<()> {
