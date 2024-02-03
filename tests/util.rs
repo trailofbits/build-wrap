@@ -4,7 +4,7 @@
 
 use std::process::Command;
 
-#[path = "../src/util.rs"]
+#[path = "../src/util/mod.rs"]
 mod main_util;
 pub use main_util::*;
 
