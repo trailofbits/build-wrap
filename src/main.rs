@@ -14,9 +14,17 @@ const DEFAULT_CMD: &str = "unshare --map-root-user --net";
 const DEFAULT_LD: &str = "cc";
 
 fn main() -> Result<()> {
-    let linker = linker()?;
-
     let args: Vec<String> = args().collect();
+
+    if args[1..]
+        .iter()
+        .all(|arg| matches!(arg.as_str(), "-h" | "--help"))
+    {
+        help();
+        return Ok(());
+    }
+
+    let linker = linker()?;
 
     let mut command = Command::new(&linker);
     command.args(&args[1..]);
@@ -29,6 +37,16 @@ fn main() -> Result<()> {
     }
 
     Ok(())
+}
+
+fn help() {
+    println!(
+        "{} {}
+
+A linker replacement to help protect against malicious build scripts",
+        env!("CARGO_PKG_NAME"),
+        env!("CARGO_PKG_VERSION"),
+    );
 }
 
 fn linker() -> Result<String> {
