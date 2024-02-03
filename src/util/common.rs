@@ -1,3 +1,5 @@
+//! This file is included verbatim in the wrapper build script's src/main.rs file.
+
 use anyhow::{anyhow, ensure, Result};
 use std::{
     fs::{set_permissions, Permissions},
