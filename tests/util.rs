@@ -2,7 +2,13 @@
 //! at compile time.
 //! See: https://doc.rust-lang.org/cargo/reference/environment-variables.html#environment-variables-cargo-sets-for-crates
 
-use std::process::Command;
+use anyhow::Result;
+use std::{
+    fs::{copy, create_dir, write},
+    path::Path,
+    process::Command,
+};
+use tempfile::{tempdir, TempDir};
 
 #[path = "../src/util/mod.rs"]
 mod main_util;
@@ -20,3 +26,22 @@ pub fn build_with_build_wrap() -> Command {
 
     command
 }
+
+pub fn temp_package(build_script_path: &Path) -> Result<TempDir> {
+    let tempdir = tempdir()?;
+
+    write(tempdir.path().join("Cargo.toml"), CARGO_TOML)?;
+    copy(build_script_path, tempdir.path().join("build.rs"))?;
+    create_dir(tempdir.path().join("src"))?;
+    write(tempdir.path().join("src/lib.rs"), "")?;
+
+    Ok(tempdir)
+}
+
+const CARGO_TOML: &str = r#"
+[package]
+name = "temp-package"
+version = "0.1.0"
+edition = "2021"
+publish = false
+"#;
