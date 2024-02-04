@@ -22,6 +22,7 @@ pub fn package(build_script_path: &Path) -> Result<TempDir> {
     Ok(tempdir)
 }
 
+// smoelius: The dependencies listed here must be sufficient to compile util/common.rs.
 const CARGO_TOML: &str = r#"
 [package]
 name = "build_script_wrapper"
