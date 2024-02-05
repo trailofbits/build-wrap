@@ -30,7 +30,7 @@ pub fn build_with_build_wrap() -> Command {
     command
 }
 
-pub fn temp_package(build_script_path: &Path) -> Result<TempDir> {
+pub fn temp_package(build_script_path: impl AsRef<Path>) -> Result<TempDir> {
     let tempdir = tempdir()?;
 
     write(tempdir.path().join("Cargo.toml"), CARGO_TOML)?;
