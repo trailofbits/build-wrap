@@ -5,7 +5,7 @@ use std::{
 };
 use tempfile::{tempdir, TempDir};
 
-mod util;
+pub mod util;
 
 #[test]
 fn custom_build_name() {

@@ -1,4 +1,4 @@
-mod util;
+pub mod util;
 
 #[test]
 fn dogfood() {

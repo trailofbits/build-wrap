@@ -5,7 +5,7 @@ use std::{
     path::Path,
 };
 
-mod util;
+pub mod util;
 
 #[test]
 fn integration() {
