@@ -30,9 +30,13 @@ fn main() -> Result<()> {
     command.args(&args[1..]);
     util::exec(command, true)?;
 
-    if let Some(path) = output_path(args.iter()) {
-        if is_build_script(&path) {
-            wrap(&linker, &path)?;
+    // smoelius: Don't wrap if `RUSTC_WRAPPER` or `RUSTC_WORKSPACE_WRAPPER` is set. That usually
+    // means that Clippy or Dylint is being run.
+    if var_os("RUSTC_WRAPPER").is_none() && var_os("RUSTC_WORKSPACE_WRAPPER").is_none() {
+        if let Some(path) = output_path(args.iter()) {
+            if is_build_script(&path) {
+                wrap(&linker, &path)?;
+            }
         }
     }
 
