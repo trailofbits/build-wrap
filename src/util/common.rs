@@ -49,6 +49,14 @@ fn unpack_and_exec(bytes: &[u8]) -> Result<()> {
 
     set_permissions(&temp_path, Permissions::from_mode(0o755))?;
 
+    // smoelius: The `BUILD_WRAP_CMD` used is the one set when set when the wrapper build script is
+    // compiled, not when it is run. So if the wrapped build script prints the following and the
+    // environment variable changes, those facts alone will not cause the wrapper build script
+    // to be rebuilt:
+    // ```
+    // cargo:rerun-if-env-changed=BUILD_WRAP_CMD
+    // ```
+    // They will cause the wrapped build script to be rerun, however.
     let s =
         option_env!("BUILD_WRAP_CMD").ok_or_else(|| anyhow!("`BUILD_WRAP_CMD` is undefined"))?;
     let args = s.split_ascii_whitespace().collect::<Vec<_>>();
