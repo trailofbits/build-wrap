@@ -10,7 +10,13 @@ use std::{
 mod util;
 mod wrapper;
 
-const DEFAULT_CMD: &str = "unshare --map-root-user --net";
+const DEFAULT_CMD: &str = "bwrap
+    --ro-bind / /
+    --dev-bind /dev /dev
+    --bind {OUT_DIR} {OUT_DIR}
+    --bind /tmp /tmp
+    --unshare-net
+    {}";
 const DEFAULT_LD: &str = "cc";
 
 fn main() -> Result<()> {

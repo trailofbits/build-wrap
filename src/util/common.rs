@@ -1,7 +1,8 @@
 //! This file is included verbatim in the wrapper build script's src/main.rs file.
 
-use anyhow::{anyhow, ensure, Result};
+use anyhow::{anyhow, bail, ensure, Context, Result};
 use std::{
+    env::var,
     fs::{set_permissions, Permissions},
     io::Write,
     os::unix::fs::PermissionsExt,
@@ -58,14 +59,18 @@ fn unpack_and_exec(bytes: &[u8]) -> Result<()> {
     // cargo:rerun-if-env-changed=BUILD_WRAP_CMD
     // ```
     // They will cause the wrapped build script to be rerun, however.
-    let s =
+    let cmd =
         option_env!("BUILD_WRAP_CMD").ok_or_else(|| anyhow!("`BUILD_WRAP_CMD` is undefined"))?;
-    let args = s.split_ascii_whitespace().collect::<Vec<_>>();
-    ensure!(!args.is_empty(), "`BUILD_WRAP_CMD` is empty");
+    let expanded_cmd = __expand_cmd(cmd, &temp_path)?;
+    let args = expanded_cmd.split_ascii_whitespace().collect::<Vec<_>>();
+    eprintln!("expanded `BUILD_WRAP_CMD`: {:#?}", &args);
+    ensure!(
+        !args.is_empty(),
+        "expanded `BUILD_WRAP_CMD` is empty or all whitespace"
+    );
 
     let mut command = Command::new(args[0]);
     command.args(&args[1..]);
-    command.arg(&temp_path);
     let _: Output = exec(command, true)?;
 
     drop(temp_path);
@@ -86,3 +91,51 @@ impl<T: AsRef<Path>> ToUtf8 for T {
     }
 }
 
+// smoelius: `__expand_cmd` is `pub` simply to allow testing it in an integration test. It is not
+// meant to be used outside of this module.
+pub fn __expand_cmd(mut cmd: &str, build_script_path: &Path) -> Result<String> {
+    let build_script_path_as_str = build_script_path.to_utf8()?;
+
+    let mut buf = String::new();
+
+    while let Some(i) = cmd.find(['{', '}']) {
+        let c = cmd.as_bytes()[i];
+
+        buf.push_str(&cmd[..i]);
+
+        cmd = &cmd[i + 1..];
+
+        // smoelius: `i` shouldn't be needed anymore.
+        #[allow(unused_variables, clippy::let_unit_value)]
+        let i = ();
+
+        // smoelius: Escaped `{` or `}`?
+        if !cmd.is_empty() && cmd.as_bytes()[0] == c {
+            buf.push(c as char);
+            cmd = &cmd[1..];
+            continue;
+        }
+
+        if c == b'{' {
+            if let Some(j) = cmd.find('}') {
+                if j == 0 {
+                    buf.push_str(build_script_path_as_str);
+                } else {
+                    let key = &cmd[..j];
+                    let value = var(key)
+                        .with_context(|| format!("environment variable `{key}` not found"))?;
+                    buf.push_str(&value);
+                }
+                cmd = &cmd[j + 1..];
+                continue;
+            }
+        }
+
+        bail!("unbalanced '{}'", c as char);
+    }
+
+    // smoelius: Push whatever is left.
+    buf.push_str(cmd);
+
+    Ok(buf)
+}

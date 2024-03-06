@@ -14,15 +14,15 @@ fn build_wrap_cmd_changed() {
 
     exec_and_check_stdout(command, false, "] real ");
 
-    // smoelius: Build with `BUILD_WRAP_CMD` set to `time -p`.
+    // smoelius: Build with `BUILD_WRAP_CMD` set to `time -p {}`.
 
     let mut command = util::build_with_build_wrap();
-    command.env("BUILD_WRAP_CMD", "time -p");
+    command.env("BUILD_WRAP_CMD", "time -p {}");
     command.current_dir(&temp_package);
 
     exec_and_check_stdout(command, false, "] real ");
 
-    // smoelius: Clean and build again with `BUILD_WRAP_CMD` set to `time -p`.
+    // smoelius: Clean and build again with `BUILD_WRAP_CMD` set to `time -p {}`.
 
     let _ = Command::new("cargo")
         .arg("clean")
@@ -31,7 +31,7 @@ fn build_wrap_cmd_changed() {
         .unwrap();
 
     let mut command = util::build_with_build_wrap();
-    command.env("BUILD_WRAP_CMD", "time -p");
+    command.env("BUILD_WRAP_CMD", "time -p {}");
     command.current_dir(&temp_package);
 
     exec_and_check_stdout(command, true, "] real ");
