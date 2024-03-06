@@ -1,4 +1,5 @@
-use anyhow::{anyhow, Result};
+use crate::util::ToUtf8;
+use anyhow::Result;
 use std::{
     fs::{create_dir, write},
     path::Path,
@@ -6,9 +7,7 @@ use std::{
 use tempfile::{tempdir, TempDir};
 
 pub fn package(build_script_path: &Path) -> Result<TempDir> {
-    let build_script_path_as_str = build_script_path
-        .to_str()
-        .ok_or_else(|| anyhow!("build script path is not valid unicode"))?;
+    let build_script_path_as_str = build_script_path.to_utf8()?;
 
     let tempdir = tempdir()?;
 

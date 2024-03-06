@@ -5,6 +5,7 @@ use std::{
     fs::{set_permissions, Permissions},
     io::Write,
     os::unix::fs::PermissionsExt,
+    path::Path,
     process::{Command, Output, Stdio},
 };
 use tempfile::NamedTempFile;
@@ -71,3 +72,17 @@ fn unpack_and_exec(bytes: &[u8]) -> Result<()> {
 
     Ok(())
 }
+
+pub trait ToUtf8 {
+    // smoelius: `anyhow::Result` in a trait is kind of ick.
+    fn to_utf8(&self) -> Result<&str>;
+}
+
+impl<T: AsRef<Path>> ToUtf8 for T {
+    fn to_utf8(&self) -> Result<&str> {
+        self.as_ref()
+            .to_str()
+            .ok_or_else(|| anyhow!("not valid utf-8"))
+    }
+}
+

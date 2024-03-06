@@ -1,7 +1,7 @@
 use std::process::Command;
 
 mod common;
-pub use common::exec;
+pub use common::{exec, ToUtf8};
 
 #[must_use]
 pub fn cargo_build() -> Command {
