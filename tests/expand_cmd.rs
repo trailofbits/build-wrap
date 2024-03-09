@@ -31,5 +31,5 @@ fn expand_cmd() {
 
 fn surround_and_expand(s: &str) -> Result<String> {
     let cmd = String::from("left ") + s + " right";
-    util::__expand_cmd(&cmd, &Path::new("path"))
+    util::__expand_cmd(&cmd, Path::new("path"))
 }

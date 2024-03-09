@@ -45,7 +45,7 @@ tempfile = "3.9"
 fn main_rs(build_script_path_as_str: &str) -> Vec<u8> {
     [
         COMMON_RS,
-        &format!(
+        format!(
             r#"
 const BYTES: &[u8] = include_bytes!("{build_script_path_as_str}");
 

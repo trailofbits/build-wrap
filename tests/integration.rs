@@ -31,7 +31,7 @@ fn test_case(path: &Path) {
     let stderr_path = path.with_extension("stderr");
     let expected_stderr_substring = read_to_string(stderr_path).unwrap();
 
-    let temp_package = util::temp_package(&path).unwrap();
+    let temp_package = util::temp_package(path).unwrap();
 
     let mut command = util::build_with_build_wrap();
     // smoelius: `--all-features` to enable optional build dependencies.
