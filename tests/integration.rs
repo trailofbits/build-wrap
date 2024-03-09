@@ -34,6 +34,8 @@ fn test_case(path: &Path) {
     let temp_package = util::temp_package(&path).unwrap();
 
     let mut command = util::build_with_build_wrap();
+    // smoelius: `--all-features` to enable optional build dependencies.
+    command.arg("--all-features");
     command.current_dir(&temp_package);
 
     let output = util::exec(command, false).unwrap();

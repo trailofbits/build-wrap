@@ -49,6 +49,9 @@ name = "temp-package"
 version = "0.1.0"
 edition = "2021"
 publish = false
+
+[build-dependencies]
+rustc_version = { version = "0.4", optional = true }
 "#;
 
 static METADATA: Lazy<Metadata> = Lazy::new(|| MetadataCommand::new().no_deps().exec().unwrap());
