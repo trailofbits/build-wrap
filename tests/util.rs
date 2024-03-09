@@ -6,12 +6,14 @@
 // See: https://users.rust-lang.org/t/invalid-dead-code-warning-for-submodule-in-integration-test/80259/2
 
 use anyhow::Result;
+use cargo_metadata::{Metadata, MetadataCommand};
+use once_cell::sync::Lazy;
 use std::{
     fs::{copy, create_dir, write},
     path::Path,
     process::Command,
 };
-use tempfile::{tempdir, TempDir};
+use tempfile::{tempdir_in, TempDir};
 
 #[path = "../src/util/mod.rs"]
 mod main_util;
@@ -48,3 +50,13 @@ version = "0.1.0"
 edition = "2021"
 publish = false
 "#;
+
+static METADATA: Lazy<Metadata> = Lazy::new(|| MetadataCommand::new().no_deps().exec().unwrap());
+
+/// Creates a temporary directory in `build-wrap`'s target directory.
+///
+/// Useful if you want to verify that writing outside of the temporary directory is forbidden, but
+/// `/tmp` is writeable, for example.
+fn tempdir() -> Result<TempDir> {
+    tempdir_in(&METADATA.target_directory).map_err(Into::into)
+}

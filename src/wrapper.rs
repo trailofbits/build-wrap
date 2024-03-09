@@ -6,6 +6,7 @@ use std::{
 };
 use tempfile::{tempdir, TempDir};
 
+#[allow(clippy::disallowed_methods)]
 pub fn package(build_script_path: &Path) -> Result<TempDir> {
     let build_script_path_as_str = build_script_path.to_utf8()?;
 

@@ -6,3 +6,7 @@ edition = "2021"
 [dependencies]
 anyhow = "1.0"
 tempfile = "3.9"
+
+[dev-dependencies]
+cargo_metadata = "0.18"
+once_cell = "1.19"

@@ -21,6 +21,7 @@ fn custom_build_name() {
     assert!(stderr.contains("ping: => missing cap_net_raw+p capability or setuid?"));
 }
 
+#[allow(clippy::disallowed_methods)]
 fn temp_package(build_script_path: &Path) -> Result<TempDir> {
     let tempdir = tempdir()?;
 
