@@ -3,6 +3,11 @@ use std::process::Command;
 mod common;
 pub use common::{exec, ToUtf8};
 
+// smoelius: `__expand_cmd` is not meant to be used outside of this module. See the comment
+// preceding `__expand_cmd`.
+#[allow(unused_imports)]
+pub use common::__expand_cmd;
+
 #[must_use]
 pub fn cargo_build() -> Command {
     let mut command = Command::new("cargo");
