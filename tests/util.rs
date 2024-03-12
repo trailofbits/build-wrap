@@ -51,6 +51,7 @@ edition = "2021"
 publish = false
 
 [build-dependencies]
+libc = { version = "0.2", optional = true }
 rustc_version = { version = "0.4", optional = true }
 "#;
 
