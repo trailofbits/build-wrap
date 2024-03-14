@@ -1,7 +1,11 @@
 [package]
 name = "build-wrap"
 version = "0.1.0"
+authors = ["Samuel Moelius <sam@moeli.us>"]
+description = "Help protect against malicious build scripts"
 edition = "2021"
+license = "AGPL-3.0"
+repository = "https://github.com/trailofbits/build-wrap"
 
 [dependencies]
 anyhow = "1.0"
