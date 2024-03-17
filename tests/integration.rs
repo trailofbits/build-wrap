@@ -47,5 +47,10 @@ fn test_case(path: &Path) {
     );
 
     let stderr = std::str::from_utf8(&output.stderr).unwrap();
-    assert!(stderr.contains(expected_stderr_substring.trim_end()));
+    assert!(
+        stderr.contains(expected_stderr_substring.trim_end()),
+        "`{}` stderr does not contain expected string:\n```\n{}\n```",
+        path.display(),
+        stderr
+    );
 }

@@ -18,7 +18,11 @@ fn custom_build_name() {
     assert!(!output.status.success());
 
     let stderr = std::str::from_utf8(&output.stderr).unwrap();
-    assert!(stderr.contains("ping: socket: Operation not permitted"));
+    assert!(
+        stderr.contains("ping: socket: Operation not permitted"),
+        "stderr does not contain expected string:\n```\n{}\n```",
+        stderr
+    );
 }
 
 #[allow(clippy::disallowed_methods)]
