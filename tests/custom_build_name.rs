@@ -18,7 +18,7 @@ fn custom_build_name() {
     assert!(!output.status.success());
 
     let stderr = std::str::from_utf8(&output.stderr).unwrap();
-    assert!(stderr.contains("ping: => missing cap_net_raw+p capability or setuid?"));
+    assert!(stderr.contains("ping: socket: Operation not permitted"));
 }
 
 #[allow(clippy::disallowed_methods)]
