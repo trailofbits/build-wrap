@@ -9,6 +9,7 @@ use anyhow::Result;
 use cargo_metadata::{Metadata, MetadataCommand};
 use once_cell::sync::Lazy;
 use std::{
+    env::set_var,
     fs::{copy, create_dir, write},
     path::Path,
     process::Command,
@@ -18,6 +19,11 @@ use tempfile::{tempdir_in, TempDir};
 #[path = "../src/util/mod.rs"]
 mod main_util;
 pub use main_util::*;
+
+#[ctor::ctor]
+fn initialize() {
+    set_var("CARGO_TERM_COLOR", "never");
+}
 
 #[must_use]
 pub fn build_with_build_wrap() -> Command {
