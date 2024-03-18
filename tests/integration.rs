@@ -2,6 +2,7 @@ use std::{
     env::var_os,
     ffi::OsStr,
     fs::{read_dir, read_to_string},
+    io::Write,
     path::Path,
 };
 
@@ -21,6 +22,9 @@ fn integration() {
             if path.extension() != Some(OsStr::new("rs")) {
                 continue;
             }
+
+            #[allow(clippy::explicit_write)]
+            writeln!(std::io::stderr(), "{}", path.display()).unwrap();
 
             test_case(&path);
         }
