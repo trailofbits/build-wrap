@@ -1,1 +1,1 @@
-ping: => missing cap_net_raw+p capability or setuid?
+ping: socket: Operation not permitted
