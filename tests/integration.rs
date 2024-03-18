@@ -15,8 +15,12 @@ fn integration() {
     if let Some(testname) = var_os("TESTNAME") {
         test_case(&test_cases.join(testname).with_extension("rs"));
     } else {
-        for entry in read_dir("tests/cases").unwrap() {
-            let entry = entry.unwrap();
+        let mut entries = read_dir("tests/cases")
+            .unwrap()
+            .collect::<Result<Vec<_>, _>>()
+            .unwrap();
+        entries.sort_by_key(|entry| entry.path());
+        for entry in entries {
             let path = entry.path();
 
             if path.extension() != Some(OsStr::new("rs")) {
