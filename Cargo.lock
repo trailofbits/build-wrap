@@ -59,6 +59,7 @@ dependencies = [
  "anyhow",
  "assert_cmd",
  "cargo_metadata",
+ "ctor",
  "once_cell",
  "tempfile",
 ]
@@ -100,6 +101,16 @@ name = "cfg-if"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
+
+[[package]]
+name = "ctor"
+version = "0.2.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ad291aa74992b9b7a7e88c38acbbf6ad7e107f1d90ee8775b7bc1fc3394f485c"
+dependencies = [
+ "quote",
+ "syn",
+]
 
 [[package]]
 name = "difflib"
