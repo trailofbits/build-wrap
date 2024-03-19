@@ -1,6 +1,7 @@
 //! This file must remain in the tests folder to ensure that `CARGO_BIN_EXE_build-wrap` is defined
-//! at compile time.
-//! See: https://doc.rust-lang.org/cargo/reference/environment-variables.html#environment-variables-cargo-sets-for-crates
+//! at compile time. See [Environment variables Cargo sets for crates].
+//!
+//! [Environment variables Cargo sets for crates]: https://doc.rust-lang.org/cargo/reference/environment-variables.html#environment-variables-cargo-sets-for-crates
 
 // smoelius: Use this module with `pub` to avoid "unused ..." warnings.
 // See: https://users.rust-lang.org/t/invalid-dead-code-warning-for-submodule-in-integration-test/80259/2

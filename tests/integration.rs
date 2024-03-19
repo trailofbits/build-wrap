@@ -1,7 +1,7 @@
 use std::{
     env::var_os,
     ffi::OsStr,
-    fs::{read_dir, read_to_string},
+    fs::{read_dir, read_to_string, DirEntry},
     io::Write,
     path::Path,
 };
@@ -19,7 +19,7 @@ fn integration() {
             .unwrap()
             .collect::<Result<Vec<_>, _>>()
             .unwrap();
-        entries.sort_by_key(|entry| entry.path());
+        entries.sort_by_key(DirEntry::path);
         for entry in entries {
             let path = entry.path();
 
@@ -57,8 +57,7 @@ fn test_case(path: &Path) {
     let stderr = std::str::from_utf8(&output.stderr).unwrap();
     assert!(
         stderr.contains(expected_stderr_substring.trim_end()),
-        "`{}` stderr does not contain expected string:\n```\n{}\n```",
+        "`{}` stderr does not contain expected string:\n```\n{stderr}\n```",
         path.display(),
-        stderr
     );
 }
