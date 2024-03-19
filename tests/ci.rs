@@ -1,5 +1,7 @@
 use assert_cmd::Command;
 
+pub mod util;
+
 #[test]
 fn clippy() {
     Command::new("cargo")
