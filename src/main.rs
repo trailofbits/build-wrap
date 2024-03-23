@@ -92,8 +92,6 @@ fn wrap(linker: &str, build_script_path: &Path) -> Result<()> {
     let wrapper_package = wrapper::package(build_script_path)?;
 
     let mut command = util::cargo_build();
-    command.arg("--manifest-path");
-    command.arg(wrapper_package.path().join("Cargo.toml"));
     if var_os("BUILD_WRAP_CMD").is_none() {
         command.env("BUILD_WRAP_CMD", DEFAULT_CMD);
     }
@@ -102,6 +100,9 @@ fn wrap(linker: &str, build_script_path: &Path) -> Result<()> {
         "--config",
         &format!("target.'cfg(all())'.linker = '{linker}'"),
     ]);
+    // smoelius: `cd` into `wrapper_package`'s directory to avoid any `.cargo/config.toml` that may
+    // be in ancestors of the current directory.
+    command.current_dir(&wrapper_package);
     util::exec(command, true)?;
 
     copy(
