@@ -1,4 +1,4 @@
-use std::process::Command;
+use std::{env::var_os, ffi::OsString, process::Command};
 
 mod common;
 pub use common::{exec, ToUtf8};
@@ -10,7 +10,10 @@ pub use common::__expand_cmd;
 
 #[must_use]
 pub fn cargo_build() -> Command {
-    let mut command = Command::new("cargo");
+    // smoelius: Respect `CARGO` environment variable, if set.
+    let cargo = var_os("CARGO").unwrap_or(OsString::from("cargo"));
+
+    let mut command = Command::new(cargo);
     command.arg("build");
 
     // smoelius: Show build script (e.g., wrapper) output.
