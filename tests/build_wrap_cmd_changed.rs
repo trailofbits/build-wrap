@@ -24,11 +24,12 @@ fn build_wrap_cmd_changed() {
 
     // smoelius: Clean and build again with `BUILD_WRAP_CMD` set to `time -p {}`.
 
-    let _ = Command::new("cargo")
+    let status = Command::new("cargo")
         .arg("clean")
         .current_dir(&temp_package)
         .status()
         .unwrap();
+    assert!(status.success());
 
     let mut command = util::build_with_build_wrap();
     command.env("BUILD_WRAP_CMD", "time -p {}");
