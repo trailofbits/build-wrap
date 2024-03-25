@@ -8,6 +8,8 @@ pub use common::{exec, ToUtf8};
 #[allow(unused_imports)]
 pub use common::__expand_cmd;
 
+pub const DEFAULT_LD: &str = "cc";
+
 #[must_use]
 pub fn cargo_build() -> Command {
     // smoelius: Respect `CARGO` environment variable, if set.

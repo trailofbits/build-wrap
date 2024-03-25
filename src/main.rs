@@ -17,7 +17,6 @@ const DEFAULT_CMD: &str = "bwrap
     --bind /tmp /tmp
     --unshare-net
     {}";
-const DEFAULT_LD: &str = "cc";
 
 fn main() -> Result<()> {
     let args: Vec<String> = args().collect();
@@ -63,7 +62,7 @@ fn linker() -> Result<String> {
     if var_os("BUILD_WRAP_LD").is_some() {
         var("BUILD_WRAP_LD").map_err(Into::into)
     } else {
-        Ok(String::from(DEFAULT_LD))
+        Ok(String::from(util::DEFAULT_LD))
     }
 }
 

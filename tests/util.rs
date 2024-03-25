@@ -39,6 +39,17 @@ pub fn build_with_build_wrap() -> Command {
     command
 }
 
+#[must_use]
+pub fn build_with_default_linker() -> Command {
+    let mut command = main_util::cargo_build();
+    command.args([
+        "--config",
+        &format!("target.'cfg(all())'.linker = '{DEFAULT_LD}'"),
+    ]);
+
+    command
+}
+
 pub fn temp_package(build_script_path: impl AsRef<Path>) -> Result<TempDir> {
     let tempdir = tempdir()?;
 
