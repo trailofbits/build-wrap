@@ -20,8 +20,13 @@ fn custom_build_name() {
     assert!(!output.status.success());
 
     let stderr = std::str::from_utf8(&output.stderr).unwrap();
+    let syscall = if cfg!(target_os = "linux") {
+        "socket"
+    } else {
+        "sendto"
+    };
     assert!(
-        stderr.contains("ping: socket: Operation not permitted"),
+        stderr.contains(&format!("ping: {syscall}: Operation not permitted")),
         "stderr does not contain expected string:\n```\n{stderr}\n```",
     );
 }
