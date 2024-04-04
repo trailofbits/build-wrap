@@ -36,7 +36,14 @@ fn integration() {
 }
 
 fn test_case(path: &Path) {
-    let stderr_path = path.with_extension("stderr");
+    let mut stderr_path = path.with_extension("stderr");
+    if !stderr_path.exists() {
+        stderr_path = if cfg!(target_os = "linux") {
+            path.with_extension("linux.stderr")
+        } else {
+            path.with_extension("macos.stderr")
+        }
+    }
     let expected_stderr_substring = read_to_string(stderr_path).unwrap();
 
     let temp_package = util::temp_package(path).unwrap();

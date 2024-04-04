@@ -2,7 +2,7 @@
 
 A linker replacement to help protect against malicious build scripts
 
-`build-wrap` "re-links" a build script so that it is executed under another command. By default the command is [Bubblewrap], though this is configurable. See [Environment variables] and [How it works] for more information.
+`build-wrap` "re-links" a build script so that it is executed under another command. By default, the command is [Bubblewrap] (Linux) or [`sandbox-exec`] (macOS), though this is configurable. See [Environment variables] and [How it works] for more information.
 
 ## Installation
 
@@ -20,7 +20,7 @@ Installing `build-wrap` requires two steps:
 
 ## Environment variables
 
-- `BUILD_WRAP_CMD`: Command used to execute a build script. Default:
+- `BUILD_WRAP_CMD`: Command used to execute a build script. Linux default:
 
   ```sh
   bwrap
@@ -33,6 +33,25 @@ Installing `build-wrap` requires two steps:
   ```
 
   Note that `bwrap` is [Bubblewrap].
+
+  macOS default:
+
+  ```sh
+  sandbox-exec -p
+  (version\ 1)\
+  (deny\ default)\
+  (allow\ file-read*)\                          # Allow read-only access everywhere
+  (allow\ file-write*\ (subpath\ "/dev"))\      # Allow write access to /dev
+  (allow\ file-write*\ (subpath\ "{OUT_DIR}"))\ # Allow write access to `OUT_DIR`
+  (allow\ file-write*\ (subpath\ "{TMPDIR}"))\  # Allow write access to `TMPDIR`
+  (allow\ process-exec)\                        # Allow `exec`
+  (allow\ process-fork)\                        # Allow `fork`
+  (allow\ sysctl-read)\                         # Allow reading kernel state
+  (deny\ network*)                              # Deny network access
+  {}                                            # Build script path
+  ```
+
+  Note that `(version\ 1)\ ... (deny\ network*)` expands to a single string (see [How `BUILD_WRAP_CMD` is expanded] below).
 
 - `BUILD_WRAP_LD`: Linker to use. Default: `cc`
 
@@ -65,4 +84,6 @@ Given a build script `B`, its "wrapped" version `B'` contains a copy of `B` and 
 [Bubblewrap]: https://github.com/containers/bubblewrap
 [Environment variables]: #environment-variables
 [How it works]: #how-it-works
+[How `BUILD_WRAP_CMD` is expanded]: #how-build_wrap_cmd-is-expanded
+[`sandbox-exec`]: https://keith.github.io/xcode-man-pages/sandbox-exec.1.html
 [manner described above]: #how-build_wrap_cmd-is-expanded
