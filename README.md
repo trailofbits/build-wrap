@@ -27,6 +27,7 @@ Installing `build-wrap` requires two steps:
     --ro-bind / /              # Allow read-only access everywhere
     --dev-bind /dev /dev       # Allow device access
     --bind {OUT_DIR} {OUT_DIR} # Allow write access to `OUT_DIR`
+    --bind /tmp /tmp           # Allow write access to /tmp
     --unshare-net              # Deny network access
     {}                         # Build script path
   ```
