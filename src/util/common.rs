@@ -61,15 +61,18 @@ fn unpack_and_exec(bytes: &[u8]) -> Result<()> {
     // They will cause the wrapped build script to be rerun, however.
     let cmd =
         option_env!("BUILD_WRAP_CMD").ok_or_else(|| anyhow!("`BUILD_WRAP_CMD` is undefined"))?;
-    let expanded_cmd = __expand_cmd(cmd, &temp_path)?;
-    let expanded_args = expanded_cmd.split_ascii_whitespace().collect::<Vec<_>>();
+    let args = split_escaped(cmd)?;
+    let expanded_args = args
+        .into_iter()
+        .map(|arg| __expand_cmd(&arg, &temp_path))
+        .collect::<Result<Vec<_>>>()?;
     eprintln!("expanded `BUILD_WRAP_CMD`: {:#?}", &expanded_args);
     ensure!(
         !expanded_args.is_empty(),
         "expanded `BUILD_WRAP_CMD` is empty or all whitespace"
     );
 
-    let mut command = Command::new(expanded_args[0]);
+    let mut command = Command::new(&expanded_args[0]);
     command.args(&expanded_args[1..]);
     let _: Output = exec(command, true)?;
 
@@ -89,6 +92,62 @@ impl<T: AsRef<Path>> ToUtf8 for T {
             .to_str()
             .ok_or_else(|| anyhow!("not valid utf-8"))
     }
+}
+
+fn split_escaped(mut s: &str) -> Result<Vec<String>> {
+    let mut v = vec![String::new()];
+
+    while let Some(i) = s.find(|c: char| c.is_ascii_whitespace() || c == '\\') {
+        debug_assert!(!v.is_empty());
+        // smoelius: Only the last string in `v` can be empty.
+        debug_assert!(v
+            .iter()
+            .position(String::is_empty)
+            .map_or(true, |i| i == v.len() - 1));
+
+        let c = s.as_bytes()[i];
+
+        v.last_mut().unwrap().push_str(&s[..i]);
+
+        s = &s[i + 1..];
+
+        // smoelius: `i` shouldn't be needed anymore.
+        #[allow(unused_variables, clippy::let_unit_value)]
+        let i = ();
+
+        if c.is_ascii_whitespace() {
+            if !v.last().unwrap().is_empty() {
+                v.push(String::new());
+            }
+            continue;
+        }
+
+        // smoelius: If the previous `if` fails, then `c` must be a backslash.
+        if !s.is_empty() {
+            let c = s.as_bytes()[0];
+            // smoelius: Verify that `c` is a legally escapable character before subslicing `s`.
+            ensure!(
+                c.is_ascii_whitespace() || c == b'\\',
+                "illegally escaped character"
+            );
+            s = &s[1..];
+            v.last_mut().unwrap().push(c as char);
+            continue;
+        }
+
+        bail!("trailing backslash");
+    }
+
+    // smoelius: Push whatever is left.
+    v.last_mut().unwrap().push_str(s);
+
+    if v.last().unwrap().is_empty() {
+        v.pop();
+    }
+
+    debug_assert!(!v.iter().any(String::is_empty));
+
+    Ok(v)
 }
 
 // smoelius: `__expand_cmd` is `pub` simply to allow testing it in an integration test. It is not
