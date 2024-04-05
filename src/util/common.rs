@@ -62,15 +62,15 @@ fn unpack_and_exec(bytes: &[u8]) -> Result<()> {
     let cmd =
         option_env!("BUILD_WRAP_CMD").ok_or_else(|| anyhow!("`BUILD_WRAP_CMD` is undefined"))?;
     let expanded_cmd = __expand_cmd(cmd, &temp_path)?;
-    let args = expanded_cmd.split_ascii_whitespace().collect::<Vec<_>>();
-    eprintln!("expanded `BUILD_WRAP_CMD`: {:#?}", &args);
+    let expanded_args = expanded_cmd.split_ascii_whitespace().collect::<Vec<_>>();
+    eprintln!("expanded `BUILD_WRAP_CMD`: {:#?}", &expanded_args);
     ensure!(
-        !args.is_empty(),
+        !expanded_args.is_empty(),
         "expanded `BUILD_WRAP_CMD` is empty or all whitespace"
     );
 
-    let mut command = Command::new(args[0]);
-    command.args(&args[1..]);
+    let mut command = Command::new(expanded_args[0]);
+    command.args(&expanded_args[1..]);
     let _: Output = exec(command, true)?;
 
     drop(temp_path);
