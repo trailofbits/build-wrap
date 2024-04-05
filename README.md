@@ -44,6 +44,8 @@ Note that the above environment variables are read **when the build script is li
 - `{VAR}` is replaced with the value of environment variable `VAR`.
 - `{{` is replaced with `{`.
 - `}}` is replaced with `}`.
+- `\` followed by a whitespace character is replaced with that whitespace character.
+- `\\` is replaced with `\`.
 
 ## How `build-wrap` works
 
