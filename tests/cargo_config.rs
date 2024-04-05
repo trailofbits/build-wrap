@@ -27,6 +27,10 @@ fn test_build(mut command: Command, expected_dir: &Path) {
     let stderr = std::str::from_utf8(&output.stderr).unwrap();
     assert!(stderr.lines().any(|line| line.starts_with(&format!(
         "warning: cargo_config@0.1.0: {}/",
-        expected_dir.display()
+        trim_trailing_slashes(&expected_dir.to_string_lossy())
     ))));
+}
+
+fn trim_trailing_slashes(s: &str) -> &str {
+    s.trim_end_matches('/')
 }
