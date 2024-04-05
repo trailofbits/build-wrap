@@ -1,10 +1,17 @@
-use std::path::Path;
+use std::{path::Path, process::Command};
 
 pub mod util;
 
 #[test]
 fn custom_build_name() {
     let dir = Path::new("fixtures/custom_build_name");
+
+    let status = Command::new("cargo")
+        .arg("clean")
+        .current_dir(dir)
+        .status()
+        .unwrap();
+    assert!(status.success());
 
     let mut command = util::build_with_build_wrap();
     command.current_dir(dir);
