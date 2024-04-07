@@ -81,6 +81,10 @@ Given a build script `B`, its "wrapped" version `B'` contains a copy of `B` and 
 3. Expand `BUILD_WRAP_CMD` in the [manner described above].
 4. Execute the expanded command.
 
+## Goals
+
+- Aside from configuration and dealing with an occasional warning, `build-wrap` should not require a user to adjust their normal workflow.
+
 [Bubblewrap]: https://github.com/containers/bubblewrap
 [Environment variables]: #environment-variables
 [How it works]: #how-it-works
