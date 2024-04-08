@@ -2,7 +2,10 @@
 
 ## 0.2.0
 
-- Preliminary macOS support ([#14](https://github.com/trailofbits/build-wrap/pull/14))
+- Change how the `BUILD_WRAP_CMD` environment variable is expanded ([500f5c1](https://github.com/trailofbits/build-wrap/commit/500f5c1f127697bfbe683e0278f6dd8be32e0bb5))
+  - Split at whitespace before replacing environment variables, instead of after
+  - Allow escaping whitespace with a backslash (`\`)
+- Preliminary macOS support ([4b72e78](https://github.com/trailofbits/build-wrap/commit/4b72e784656e4eb31a3937ebc3d2ccc2a25123e9))
 
 ## 0.1.1
 
