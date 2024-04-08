@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.0
+
+- Preliminary macOS support ([#14](https://github.com/trailofbits/build-wrap/pull/14))
+
 ## 0.1.1
 
 - Respect `CARGO` environment variable, if set ([3512a63](https://github.com/trailofbits/build-wrap/commit/3512a636868e1e871ce4544f5bd425fbcf88b444))
