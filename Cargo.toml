@@ -22,3 +22,11 @@ pedantic = { level = "warn", priority = -1 }
 let_underscore_untyped = "warn"
 missing_errors_doc = "allow"
 missing_panics_doc = "allow"
+
+[workspace]
+exclude = ["fixtures", "target"]
+
+[workspace.metadata.dylint]
+libraries = [
+    { git = "https://github.com/trailofbits/dylint", pattern = "examples/restriction/inconsistent_qualification" },
+]

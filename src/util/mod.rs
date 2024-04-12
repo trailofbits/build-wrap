@@ -1,4 +1,4 @@
-use std::{env::var_os, ffi::OsString, process::Command};
+use std::{env, ffi::OsString, process::Command};
 
 mod common;
 pub use common::{exec, ToUtf8};
@@ -13,7 +13,7 @@ pub const DEFAULT_LD: &str = "cc";
 #[must_use]
 pub fn cargo_build() -> Command {
     // smoelius: Respect `CARGO` environment variable, if set.
-    let cargo = var_os("CARGO").unwrap_or(OsString::from("cargo"));
+    let cargo = env::var_os("CARGO").unwrap_or(OsString::from("cargo"));
 
     let mut command = Command::new(cargo);
     command.arg("build");
