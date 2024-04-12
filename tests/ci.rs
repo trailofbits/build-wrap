@@ -16,3 +16,12 @@ fn clippy() {
         .assert()
         .success();
 }
+
+#[test]
+fn dylint() {
+    Command::new("cargo")
+        .args(["dylint", "--all", "--", "--all-features", "--all-targets"])
+        .env("DYLINT_RUSTFLAGS", "--deny warnings")
+        .assert()
+        .success();
+}

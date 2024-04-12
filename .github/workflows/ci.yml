@@ -73,7 +73,8 @@ jobs:
         run: |
           rustup install nightly
           rustup +nightly component add clippy
-          cargo install group-runner || true
+          cargo install cargo-dylint dylint-link || true
+          cargo install group-runner             || true
 
       - name: Install Bubblewrap
         if: ${{ matrix.environment == 'ubuntu-latest' }}

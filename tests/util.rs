@@ -10,7 +10,7 @@ use anyhow::Result;
 use cargo_metadata::{Metadata, MetadataCommand};
 use once_cell::sync::Lazy;
 use std::{
-    env::set_var,
+    env,
     fs::{copy, create_dir, write},
     path::Path,
     process::Command,
@@ -23,14 +23,14 @@ pub use main_util::*;
 
 #[ctor::ctor]
 fn initialize() {
-    set_var("CARGO_TERM_COLOR", "never");
+    env::set_var("CARGO_TERM_COLOR", "never");
 }
 
 #[must_use]
 pub fn build_with_build_wrap() -> Command {
     let build_wrap = env!("CARGO_BIN_EXE_build-wrap");
 
-    let mut command = main_util::cargo_build();
+    let mut command = cargo_build();
     command.args([
         "--config",
         &format!("target.'cfg(all())'.linker = '{build_wrap}'"),
@@ -41,7 +41,7 @@ pub fn build_with_build_wrap() -> Command {
 
 #[must_use]
 pub fn build_with_default_linker() -> Command {
-    let mut command = main_util::cargo_build();
+    let mut command = cargo_build();
     command.args([
         "--config",
         &format!("target.'cfg(all())'.linker = '{DEFAULT_LD}'"),
