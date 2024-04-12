@@ -32,7 +32,8 @@ publish = false
 
 [dependencies]
 anyhow = "1.0"
-tempfile = "3.9"
+once_cell = "1.19"
+tempfile = "3.10"
 "#;
 
 /// A wrapper build script's src/main.rs consists of the following:

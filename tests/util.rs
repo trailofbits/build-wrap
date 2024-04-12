@@ -71,6 +71,10 @@ publish = false
 [build-dependencies]
 libc = { version = "0.2", optional = true }
 rustc_version = { version = "0.4", optional = true }
+
+# smoelius: `psm` (https://crates.io/crates/psm) is an example of a package that requires write
+# access to `PRIVATE_TMPDIR` to build. `psm` isn't actually used by any of the integration tests.
+psm = { version = "0.1", optional = true }
 "#;
 
 static METADATA: Lazy<Metadata> = Lazy::new(|| MetadataCommand::new().no_deps().exec().unwrap());
