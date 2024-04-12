@@ -21,14 +21,6 @@ const DEFAULT_CMD: &str = if cfg!(target_os = "linux") {
 } else {
     // smoelius: The following blog post is a useful `sandbox-exec` reference:
     // https://7402.org/blog/2020/macos-sandboxing-of-folder.html
-    // smoelius: The following package does not build with the current `sandbox-exec` command:
-    // https://crates.io/crates/psm
-    // Adding the following line fixes the problem:
-    // ```
-    // (allow\ file-write*\ (subpath\ "/private{TMPDIR}"))\
-    // ```
-    // However, I don't want to pollute the command for this one package. This issue requires
-    // further investigation.
     r#"sandbox-exec -p
 (version\ 1)\
 (deny\ default)\
@@ -36,6 +28,7 @@ const DEFAULT_CMD: &str = if cfg!(target_os = "linux") {
 (allow\ file-write*\ (subpath\ "/dev"))\
 (allow\ file-write*\ (subpath\ "{OUT_DIR}"))\
 (allow\ file-write*\ (subpath\ "{TMPDIR}"))\
+(allow\ file-write*\ (subpath\ "{PRIVATE_TMPDIR}"))\
 (allow\ process-exec)\
 (allow\ process-fork)\
 (allow\ sysctl-read)\

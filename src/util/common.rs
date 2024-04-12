@@ -1,9 +1,10 @@
 //! This file is included verbatim in the wrapper build script's src/main.rs file.
 
 use anyhow::{anyhow, bail, ensure, Context, Result};
+use once_cell::sync::Lazy;
 use std::{
-    env::var,
-    fs::{set_permissions, Permissions},
+    env,
+    fs::{canonicalize, set_permissions, Permissions},
     io::Write,
     os::unix::fs::PermissionsExt,
     path::Path,
@@ -197,4 +198,23 @@ pub fn __expand_cmd(mut cmd: &str, build_script_path: &Path) -> Result<String> {
     buf.push_str(cmd);
 
     Ok(buf)
+}
+
+static PRIVATE_TMPDIR: Lazy<Option<String>> = Lazy::new(|| {
+    var("TMPDIR").ok().and_then(|value| {
+        let path = canonicalize(value).ok()?;
+        if path.starts_with("/private") {
+            path.to_utf8().map(ToOwned::to_owned).ok()
+        } else {
+            None
+        }
+    })
+});
+
+fn var(key: &str) -> Result<String, env::VarError> {
+    if key == "PRIVATE_TMPDIR" {
+        return PRIVATE_TMPDIR.clone().ok_or(env::VarError::NotPresent);
+    }
+
+    env::var(key)
 }

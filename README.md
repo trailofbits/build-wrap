@@ -18,7 +18,7 @@ Installing `build-wrap` requires two steps:
    linker = "build-wrap"
    ```
 
-## Environment variables
+## Environment variables that `build-wrap` reads
 
 - `BUILD_WRAP_CMD`: Command used to execute a build script. Linux default:
 
@@ -40,15 +40,16 @@ Installing `build-wrap` requires two steps:
   sandbox-exec -p
   (version\ 1)\
   (deny\ default)\
-  (allow\ file-read*)\                          # Allow read-only access everywhere
-  (allow\ file-write*\ (subpath\ "/dev"))\      # Allow write access to /dev
-  (allow\ file-write*\ (subpath\ "{OUT_DIR}"))\ # Allow write access to `OUT_DIR`
-  (allow\ file-write*\ (subpath\ "{TMPDIR}"))\  # Allow write access to `TMPDIR`
-  (allow\ process-exec)\                        # Allow `exec`
-  (allow\ process-fork)\                        # Allow `fork`
-  (allow\ sysctl-read)\                         # Allow reading kernel state
-  (deny\ network*)                              # Deny network access
-  {}                                            # Build script path
+  (allow\ file-read*)\                                 # Allow read-only access everywhere
+  (allow\ file-write*\ (subpath\ "/dev"))\             # Allow write access to /dev
+  (allow\ file-write*\ (subpath\ "{OUT_DIR}"))\        # Allow write access to `OUT_DIR`
+  (allow\ file-write*\ (subpath\ "{TMPDIR}"))\         # Allow write access to `TMPDIR`
+  (allow\ file-write*\ (subpath\ "{PRIVATE_TMPDIR}"))\ # Allow write access to `PRIVATE_TMPDIR` (see below)
+  (allow\ process-exec)\                               # Allow `exec`
+  (allow\ process-fork)\                               # Allow `fork`
+  (allow\ sysctl-read)\                                # Allow reading kernel state
+  (deny\ network*)                                     # Deny network access
+  {}                                                   # Build script path
   ```
 
   Note that `(version\ 1)\ ... (deny\ network*)` expands to a single string (see [How `BUILD_WRAP_CMD` is expanded] below).
@@ -56,6 +57,12 @@ Installing `build-wrap` requires two steps:
 - `BUILD_WRAP_LD`: Linker to use. Default: `cc`
 
 Note that the above environment variables are read **when the build script is linked**. So, for example, changing `BUILD_WRAP_CMD` will not change the command used to execute already linked build scripts.
+
+## Environment variables that `build-wrap` treats as set
+
+Note that we say "treats as set" because these are considered only when [`BUILD_WRAP_CMD` is expanded].
+
+- `PRIVATE_TMPDIR`: If `TMPDIR` is set to a path in `/private` (as is typical on macOS), then `PRIVATE_TMPDIR` expands to that path. This is needed for some build scripts that use [`cc-rs`], though the exact reason it is needed is still unknown.
 
 ## How `BUILD_WRAP_CMD` is expanded
 
@@ -89,5 +96,7 @@ Given a build script `B`, its "wrapped" version `B'` contains a copy of `B` and 
 [Environment variables]: #environment-variables
 [How it works]: #how-it-works
 [How `BUILD_WRAP_CMD` is expanded]: #how-build_wrap_cmd-is-expanded
+[`BUILD_WRAP_CMD` is expanded]: #how-build_wrap_cmd-is-expanded
+[`cc-rs`]: https://github.com/rust-lang/cc-rs
 [`sandbox-exec`]: https://keith.github.io/xcode-man-pages/sandbox-exec.1.html
 [manner described above]: #how-build_wrap_cmd-is-expanded
