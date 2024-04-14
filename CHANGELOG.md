@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1
+
+- If `TMPDIR` is set to a path in `/private`, then `PRIVATE_TMPDIR` is treated as though it is set to that path when `BUILD_WRAP_CMD` is expanded. This is needed for some build scripts that use [`cc-rs`](https://github.com/rust-lang/cc-rs). ([ff75d98](https://github.com/trailofbits/build-wrap/commit/ff75d98b2ea9ad63d8361e94c13ec0e6678d22e5))
+
 ## 0.2.0
 
 - Change how the `BUILD_WRAP_CMD` environment variable is expanded ([500f5c1](https://github.com/trailofbits/build-wrap/commit/500f5c1f127697bfbe683e0278f6dd8be32e0bb5))
