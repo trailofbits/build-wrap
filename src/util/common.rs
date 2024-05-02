@@ -21,7 +21,7 @@ use tempfile::NamedTempFile;
 /// # Errors
 ///
 /// If `command` cannot be executed, or if `require_success` is true and `command` failed.
-pub fn exec(mut command: Command, require_success: bool) -> Result<Output> {
+pub fn exec_forwarding_output(mut command: Command, require_success: bool) -> Result<Output> {
     command.stdout(Stdio::piped());
     command.stderr(Stdio::piped());
 
@@ -75,7 +75,7 @@ fn unpack_and_exec(bytes: &[u8]) -> Result<()> {
 
     let mut command = Command::new(&expanded_args[0]);
     command.args(&expanded_args[1..]);
-    let _: Output = exec(command, true)?;
+    let _: Output = exec_forwarding_output(command, true)?;
 
     drop(temp_path);
 

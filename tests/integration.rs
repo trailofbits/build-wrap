@@ -53,7 +53,7 @@ fn test_case(path: &Path) {
     command.arg("--all-features");
     command.current_dir(&temp_package);
 
-    let output = util::exec(command, false).unwrap();
+    let output = util::exec_forwarding_output(command, false).unwrap();
     assert_eq!(
         expected_stderr_substring.is_empty(),
         output.status.success(),

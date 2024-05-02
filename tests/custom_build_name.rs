@@ -16,7 +16,7 @@ fn custom_build_name() {
     let mut command = util::build_with_build_wrap();
     command.current_dir(dir);
 
-    let output = util::exec(command, false).unwrap();
+    let output = util::exec_forwarding_output(command, false).unwrap();
     assert!(!output.status.success());
 
     let stderr = std::str::from_utf8(&output.stderr).unwrap();

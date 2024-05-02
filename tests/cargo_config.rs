@@ -23,7 +23,7 @@ fn cargo_config() {
 
 fn test_build(mut command: Command, expected_dir: &Path) {
     command.current_dir(DIR);
-    let output = util::exec(command, true).unwrap();
+    let output = util::exec_forwarding_output(command, true).unwrap();
     let stderr = std::str::from_utf8(&output.stderr).unwrap();
     assert!(stderr.lines().any(|line| line.starts_with(&format!(
         "warning: cargo_config@0.1.0: {}/",
