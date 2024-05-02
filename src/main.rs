@@ -51,7 +51,7 @@ fn main() -> Result<()> {
 
     let mut command = Command::new(&linker);
     command.args(&args[1..]);
-    util::exec(command, true)?;
+    util::exec_forwarding_output(command, true)?;
 
     // smoelius: Don't wrap if `RUSTC_WRAPPER` or `RUSTC_WORKSPACE_WRAPPER` is set. That usually
     // means that Clippy or Dylint is being run.
@@ -120,7 +120,7 @@ fn wrap(linker: &str, build_script_path: &Path) -> Result<()> {
     // smoelius: `cd` into `wrapper_package`'s directory to avoid any `.cargo/config.toml` that may
     // be in ancestors of the current directory.
     command.current_dir(&wrapper_package);
-    util::exec(command, true)?;
+    util::exec_forwarding_output(command, true)?;
 
     copy(
         wrapper_package

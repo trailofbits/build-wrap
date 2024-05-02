@@ -1,7 +1,7 @@
 use std::{env, ffi::OsString, process::Command};
 
 mod common;
-pub use common::{exec, ToUtf8};
+pub use common::{exec_forwarding_output, ToUtf8};
 
 // smoelius: `__expand_cmd` is not meant to be used outside of this module. See the comment
 // preceding `__expand_cmd`.
