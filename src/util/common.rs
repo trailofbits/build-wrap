@@ -60,18 +60,7 @@ fn unpack_and_exec(bytes: &[u8]) -> Result<()> {
     // cargo:rerun-if-env-changed=BUILD_WRAP_CMD
     // ```
     // They will cause the wrapped build script to be rerun, however.
-    let cmd =
-        option_env!("BUILD_WRAP_CMD").ok_or_else(|| anyhow!("`BUILD_WRAP_CMD` is undefined"))?;
-    let args = split_escaped(cmd)?;
-    let expanded_args = args
-        .into_iter()
-        .map(|arg| __expand_cmd(&arg, &temp_path))
-        .collect::<Result<Vec<_>>>()?;
-    eprintln!("expanded `BUILD_WRAP_CMD`: {:#?}", &expanded_args);
-    ensure!(
-        !expanded_args.is_empty(),
-        "expanded `BUILD_WRAP_CMD` is empty or all whitespace"
-    );
+    let expanded_args = split_and_expand(&temp_path)?;
 
     let mut command = Command::new(&expanded_args[0]);
     command.args(&expanded_args[1..]);
@@ -93,6 +82,23 @@ impl<T: AsRef<Path>> ToUtf8 for T {
             .to_str()
             .ok_or_else(|| anyhow!("not valid utf-8"))
     }
+}
+
+pub fn split_and_expand(build_script_path: &Path) -> Result<Vec<String>> {
+    let cmd =
+        option_env!("BUILD_WRAP_CMD").ok_or_else(|| anyhow!("`BUILD_WRAP_CMD` is undefined"))?;
+    let args = split_escaped(cmd)?;
+    let expanded_args = args
+        .into_iter()
+        .map(|arg| __expand_cmd(&arg, build_script_path))
+        .collect::<Result<Vec<_>>>()?;
+    eprintln!("expanded `BUILD_WRAP_CMD`: {:#?}", &expanded_args);
+    ensure!(
+        !expanded_args.is_empty(),
+        "expanded `BUILD_WRAP_CMD` is empty or all whitespace"
+    );
+
+    Ok(expanded_args)
 }
 
 fn split_escaped(mut s: &str) -> Result<Vec<String>> {
