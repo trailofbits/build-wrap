@@ -30,4 +30,5 @@ exclude = ["fixtures", "target"]
 [workspace.metadata.dylint]
 libraries = [
     { git = "https://github.com/trailofbits/dylint", pattern = "examples/restriction/inconsistent_qualification" },
+    { git = "https://github.com/trailofbits/dylint", pattern = "examples/restriction/misleading_variable_name" },
 ]
