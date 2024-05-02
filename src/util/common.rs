@@ -29,9 +29,12 @@ pub fn exec_forwarding_output(mut command: Command, require_success: bool) -> Re
 
     // smoelius: Stdout *must* be forwarded.
     // See: https://doc.rust-lang.org/cargo/reference/build-scripts.html#life-cycle-of-a-build-script
-    // `println!` and `eprintln!` are used so that `libtest` will capture them.
-    println!("{}", String::from_utf8_lossy(&output.stdout));
-    eprintln!("{}", String::from_utf8_lossy(&output.stderr));
+    // `print!` and `eprint!` are used so that `libtest` will capture them.
+    print!("{}", String::from_utf8_lossy(&output.stdout));
+    eprint!("{}", String::from_utf8_lossy(&output.stderr));
+
+    std::io::stdout().flush()?;
+    std::io::stderr().flush()?;
 
     if require_success {
         ensure!(output.status.success(), "command failed: {command:?}");
