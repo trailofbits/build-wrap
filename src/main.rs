@@ -34,6 +34,10 @@ const DEFAULT_CMD: &str = if cfg!(target_os = "linux") {
 fn main() -> Result<()> {
     let args: Vec<String> = args().collect();
 
+    run(&args)
+}
+
+fn run(args: &[String]) -> Result<()> {
     if args[1..]
         .iter()
         .all(|arg| matches!(arg.as_str(), "-h" | "--help"))
@@ -42,7 +46,7 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    linking::link(&args)
+    linking::link(args)
 }
 
 fn help() {
@@ -53,4 +57,17 @@ A linker replacement to help protect against malicious build scripts",
         env!("CARGO_PKG_NAME"),
         env!("CARGO_PKG_VERSION"),
     );
+}
+
+#[cfg(test)]
+mod test {
+    #[test]
+    fn help() {
+        super::run(&["build-wrap".to_owned(), "--help".to_owned()]).unwrap();
+    }
+
+    #[test]
+    fn version() {
+        super::run(&["build-wrap".to_owned(), "--version".to_owned()]).unwrap();
+    }
 }
