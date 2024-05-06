@@ -1,5 +1,10 @@
-use anyhow::Result;
-use std::env::args;
+use anyhow::{bail, Context, Result};
+use once_cell::sync::Lazy;
+use std::{
+    env::{args, current_exe},
+    fs::read_to_string,
+    io::{stdout, IsTerminal},
+};
 
 mod linking;
 mod util;
@@ -49,6 +54,22 @@ fn run(args: &[String]) -> Result<()> {
     linking::link(args)
 }
 
+static ENABLED: Lazy<&str> = Lazy::new(|| {
+    if stdout().is_terminal() {
+        "\x1b[1;32mENABLED\x1b[0m"
+    } else {
+        "ENABLED"
+    }
+});
+
+static DISABLED: Lazy<&str> = Lazy::new(|| {
+    if stdout().is_terminal() {
+        "\x1b[1;31mDISABLED\x1b[0m"
+    } else {
+        "DISABLED"
+    }
+});
+
 fn help() {
     println!(
         "{} {}
@@ -57,6 +78,54 @@ A linker replacement to help protect against malicious build scripts",
         env!("CARGO_PKG_NAME"),
         env!("CARGO_PKG_VERSION"),
     );
+    let result = enabled();
+    if matches!(result, Ok(true)) {
+        println!(
+            "
+build-wrap is {}",
+            *ENABLED
+        );
+        return;
+    }
+    let msg = result
+        .err()
+        .map(|error| format!(": {error}"))
+        .unwrap_or_default();
+    println!(
+        r#"
+build-wrap is {}{msg}
+
+To enable build-wrap, create a `.cargo/config.toml` file in your home directory with the following contents:
+
+```
+[target.'cfg(all())']
+linker = "build-wrap"
+```"#,
+        *DISABLED
+    );
+}
+
+fn enabled() -> Result<bool> {
+    let current_exe = current_exe()?;
+    let Some(home) = home::home_dir() else {
+        bail!("failed to determine home directory");
+    };
+    let path_buf = home.join(".cargo/config.toml");
+    let contents = read_to_string(&path_buf)
+        .with_context(|| format!("failed to read `{}`", path_buf.display()))?;
+    let table = contents.parse::<toml::Table>()?;
+    let Some(linker) = table
+        .get("target")
+        .and_then(toml::Value::as_table)
+        .and_then(|table| table.get("cfg(all())"))
+        .and_then(toml::Value::as_table)
+        .and_then(|table| table.get("linker"))
+        .and_then(toml::Value::as_str)
+    else {
+        bail!("`config.toml` has unexpected contents");
+    };
+    let path = util::which(linker)?;
+    Ok(current_exe == path)
 }
 
 #[cfg(test)]

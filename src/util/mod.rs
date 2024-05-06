@@ -1,4 +1,5 @@
-use std::{env, ffi::OsString, process::Command};
+use anyhow::{ensure, Result};
+use std::{env, ffi::OsString, fs::canonicalize, path::PathBuf, process::Command};
 
 mod common;
 pub use common::{exec_forwarding_output, ToUtf8};
@@ -27,4 +28,14 @@ pub fn cargo_build() -> Command {
     command.env("RUSTC_LOG", "rustc_codegen_ssa::back::link=info");
 
     command
+}
+
+pub fn which(filename: &str) -> Result<PathBuf> {
+    let mut command = Command::new("which");
+    let output = command.arg(filename).output()?;
+    ensure!(output.status.success(), "command failed: {command:?}");
+
+    let stdout = std::str::from_utf8(&output.stdout)?;
+    let path = canonicalize(stdout.trim_end())?;
+    Ok(path)
 }
