@@ -36,8 +36,11 @@ pub fn exec_forwarding_output(mut command: Command, failure_is_error: bool) -> R
     std::io::stdout().flush()?;
     std::io::stderr().flush()?;
 
-    if failure_is_error {
-        ensure!(output.status.success(), "command failed: {command:?}");
+    if !output.status.success() {
+        if failure_is_error {
+            bail!("command failed: {command:?}");
+        }
+        eprintln!("command failed: {command:?}");
     }
 
     Ok(output)
@@ -65,9 +68,19 @@ fn unpack_and_exec(bytes: &[u8]) -> Result<()> {
     // They will cause the wrapped build script to be rerun, however.
     let expanded_args = split_and_expand(&temp_path)?;
 
+    let allow_enabled = enabled("BUILD_WRAP_ALLOW");
+
     let mut command = Command::new(&expanded_args[0]);
     command.args(&expanded_args[1..]);
-    let _: Output = exec_forwarding_output(command, true)?;
+    let output = exec_forwarding_output(command, !allow_enabled)?;
+
+    // smoelius: We should arrive at this `if` with `!output.status.success()` only when
+    // `BUILD_WRAP_ALLOW` is enabled.
+    if !output.status.success() {
+        debug_assert!(allow_enabled);
+        let command = Command::new(&temp_path);
+        let _: Output = exec_forwarding_output(command, true)?;
+    }
 
     drop(temp_path);
 
@@ -226,4 +239,8 @@ fn var(key: &str) -> Result<String, env::VarError> {
     }
 
     env::var(key)
+}
+
+fn enabled(name: &str) -> bool {
+    env::var(name).map_or(false, |value| value != "0")
 }
