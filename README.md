@@ -20,6 +20,8 @@ Installing `build-wrap` requires two steps:
 
 ## Environment variables that `build-wrap` reads
 
+- `BUILD_WRAP_ALLOW`: When set to a value other than `0`, `build-wrap` uses the following weakened strategy. If a running a build script under `BUILD_WRAP_CMD` fails, report the failure and rerun the build script normally.
+
 - `BUILD_WRAP_CMD`: Command used to execute a build script. Linux default:
 
   ```sh
