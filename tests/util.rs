@@ -83,6 +83,6 @@ static METADATA: Lazy<Metadata> = Lazy::new(|| MetadataCommand::new().no_deps().
 ///
 /// Useful if you want to verify that writing outside of the temporary directory is forbidden, but
 /// `/tmp` is writeable, for example.
-fn tempdir() -> Result<TempDir> {
+pub fn tempdir() -> Result<TempDir> {
     tempdir_in(&METADATA.target_directory).map_err(Into::into)
 }
