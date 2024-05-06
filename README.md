@@ -22,6 +22,12 @@ Installing `build-wrap` requires two steps:
 
 - `BUILD_WRAP_ALLOW`: When set to a value other than `0`, `build-wrap` uses the following weakened strategy. If a running a build script under `BUILD_WRAP_CMD` fails, report the failure and rerun the build script normally.
 
+  Note that to see the reported failures, you must invoke Cargo with the `-vv` (["very verbose"]) flag, e.g.:
+
+  ```sh
+  BUILD_WRAP_ALLOW=1 cargo build -vv
+  ```
+
 - `BUILD_WRAP_CMD`: Command used to execute a build script. Linux default:
 
   ```sh
@@ -94,6 +100,7 @@ Given a build script `B`, its "wrapped" version `B'` contains a copy of `B` and 
 
 - Aside from configuration and dealing with an occasional warning, `build-wrap` should not require a user to adjust their normal workflow.
 
+["very verbose"]: https://doc.rust-lang.org/cargo/reference/build-scripts.html#outputs-of-the-build-script
 [Bubblewrap]: https://github.com/containers/bubblewrap
 [Environment variables that `build-wrap` reads]: #environment-variables-that-build-wrap-reads
 [How `BUILD_WRAP_CMD` is expanded]: #how-build_wrap_cmd-is-expanded
