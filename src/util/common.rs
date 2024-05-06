@@ -20,8 +20,8 @@ use tempfile::NamedTempFile;
 ///
 /// # Errors
 ///
-/// If `command` cannot be executed, or if `require_success` is true and `command` failed.
-pub fn exec_forwarding_output(mut command: Command, require_success: bool) -> Result<Output> {
+/// If `command` cannot be executed, or if `failure_is_error` is true and `command` failed.
+pub fn exec_forwarding_output(mut command: Command, failure_is_error: bool) -> Result<Output> {
     command.stdout(Stdio::piped());
     command.stderr(Stdio::piped());
 
@@ -36,7 +36,7 @@ pub fn exec_forwarding_output(mut command: Command, require_success: bool) -> Re
     std::io::stdout().flush()?;
     std::io::stderr().flush()?;
 
-    if require_success {
+    if failure_is_error {
         ensure!(output.status.success(), "command failed: {command:?}");
     }
 
