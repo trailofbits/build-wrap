@@ -1,1 +1,3 @@
-disallowed-methods = [{ path = "tempfile::tempdir" }]
+disallowed-methods = [
+    { path = "tempfile::tempdir", reason = "use `tests::util::tempdir`" },
+]
