@@ -2,7 +2,7 @@
 
 A linker replacement to help protect against malicious build scripts
 
-`build-wrap` "re-links" a build script so that it is executed under another command. By default, the command is [Bubblewrap] (Linux) or [`sandbox-exec`] (macOS), though this is configurable. See [Environment variables] and [How it works] for more information.
+`build-wrap` "re-links" a build script so that it is executed under another command. By default, the command is [Bubblewrap] (Linux) or [`sandbox-exec`] (macOS), though this is configurable. See [Environment variables that `build-wrap` reads] and [How `build-wrap` works] for more information.
 
 ## Installation
 
@@ -95,9 +95,9 @@ Given a build script `B`, its "wrapped" version `B'` contains a copy of `B` and 
 - Aside from configuration and dealing with an occasional warning, `build-wrap` should not require a user to adjust their normal workflow.
 
 [Bubblewrap]: https://github.com/containers/bubblewrap
-[Environment variables]: #environment-variables
-[How it works]: #how-it-works
+[Environment variables that `build-wrap` reads]: #environment-variables-that-build-wrap-reads
 [How `BUILD_WRAP_CMD` is expanded]: #how-build_wrap_cmd-is-expanded
+[How `build-wrap` works]: #how-build-wrap-works
 [`BUILD_WRAP_CMD` is expanded]: #how-build_wrap_cmd-is-expanded
 [`cc-rs`]: https://github.com/rust-lang/cc-rs
 [`sandbox-exec`]: https://keith.github.io/xcode-man-pages/sandbox-exec.1.html
