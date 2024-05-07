@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.0
+
+- FEATURE: Show whether `build-wrap` is enabled in help message ([72a5991](https://github.com/trailofbits/build-wrap/commit/72a5991c7cdc55250f78692598cc9ff48e23d338))
+- FEATURE: Add `BUILD_WRAP_ALLOW` environment variable. When set, if running a build script under `BUILD_WRAP_CMD` fails, the failure is reported and the build script is rerun normally. ([639b21b](https://github.com/trailofbits/build-wrap/commit/639b21b5fe1711967c969ba9ffd6afabe0ffa44d))
+
 ## 0.2.1
 
 - If `TMPDIR` is set to a path in `/private`, then `PRIVATE_TMPDIR` is treated as though it is set to that path when `BUILD_WRAP_CMD` is expanded. This is needed for some build scripts that use [`cc-rs`](https://github.com/rust-lang/cc-rs). ([ff75d98](https://github.com/trailofbits/build-wrap/commit/ff75d98b2ea9ad63d8361e94c13ec0e6678d22e5))
