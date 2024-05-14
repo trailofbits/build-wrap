@@ -28,7 +28,7 @@ linker = "build-wrap""#,
         if set_path {
             let metadata = MetadataCommand::new().no_deps().exec().unwrap();
             let target_debug = metadata.target_directory.join("debug").into_std_path_buf();
-            command.env("PATH", prefix_paths(target_debug).unwrap());
+            command.env("PATH", prepend_paths(target_debug).unwrap());
         }
         exec_and_check_stdout(
             command,
@@ -40,7 +40,7 @@ linker = "build-wrap""#,
     }
 }
 
-fn prefix_paths(path: PathBuf) -> Result<OsString> {
+fn prepend_paths(path: PathBuf) -> Result<OsString> {
     let paths = var_os("PATH").with_context(|| "`PATH` is unset")?;
     let paths_split = split_paths(&paths);
     let paths_chained = std::iter::once(path).chain(paths_split);
