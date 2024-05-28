@@ -6,9 +6,10 @@ use std::{
     env,
     fs::{canonicalize, set_permissions, Permissions},
     io::Write,
-    os::unix::fs::PermissionsExt,
+    os::unix::{ffi::OsStrExt, fs::PermissionsExt},
     path::Path,
     process::{Command, Output, Stdio},
+    str::Utf8Error,
 };
 use tempfile::NamedTempFile;
 
@@ -88,15 +89,12 @@ fn unpack_and_exec(bytes: &[u8]) -> Result<()> {
 }
 
 pub trait ToUtf8 {
-    // smoelius: `anyhow::Result` in a trait is kind of ick.
-    fn to_utf8(&self) -> Result<&str>;
+    fn to_utf8(&self) -> std::result::Result<&str, Utf8Error>;
 }
 
 impl<T: AsRef<Path>> ToUtf8 for T {
-    fn to_utf8(&self) -> Result<&str> {
-        self.as_ref()
-            .to_str()
-            .ok_or_else(|| anyhow!("not valid utf-8"))
+    fn to_utf8(&self) -> std::result::Result<&str, Utf8Error> {
+        std::str::from_utf8(self.as_ref().as_os_str().as_bytes())
     }
 }
 
