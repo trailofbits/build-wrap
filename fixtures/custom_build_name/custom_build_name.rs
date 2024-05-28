@@ -1,1 +1,1 @@
-../../tests/cases/ping.rs
+../../tests/build_scripts/ping.rs

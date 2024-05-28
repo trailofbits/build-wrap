@@ -5,7 +5,7 @@ pub mod util;
 #[test]
 fn build_wrap_cmd_changed() {
     let temp_package =
-        util::temp_package("tests/cases/rerun_if_build_wrap_cmd_changed.rs").unwrap();
+        util::temp_package("tests/build_scripts/rerun_if_build_wrap_cmd_changed.rs").unwrap();
 
     // smoelius: Build with default `BUILD_WRAP_CMD`.
 

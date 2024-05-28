@@ -10,12 +10,12 @@ pub mod util;
 
 #[test]
 fn integration() {
-    let test_cases = Path::new("tests/cases");
+    let test_cases = Path::new("tests/build_scripts");
 
     if let Some(testname) = var_os("TESTNAME") {
         test_case(&test_cases.join(testname).with_extension("rs"));
     } else {
-        let mut entries = read_dir("tests/cases")
+        let mut entries = read_dir("tests/build_scripts")
             .unwrap()
             .collect::<Result<Vec<_>, _>>()
             .unwrap();
