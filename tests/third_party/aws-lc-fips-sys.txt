@@ -1,0 +1,3 @@
+# smoelius: https://github.com/rust-lang/docs.rs/issues/2513#issuecomment-2132648674
+
+0.12

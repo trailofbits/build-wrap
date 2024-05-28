@@ -2,7 +2,7 @@ pub mod util;
 
 #[test]
 fn allow() {
-    let temp_package = util::temp_package("tests/build_scripts/ping.rs").unwrap();
+    let temp_package = util::temp_package(Some("tests/build_scripts/ping.rs"), []).unwrap();
 
     for allow in [false, true] {
         let mut command = util::build_with_build_wrap();
