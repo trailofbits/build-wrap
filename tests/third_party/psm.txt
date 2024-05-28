@@ -1,0 +1,4 @@
+# smoelius: `psm` (https://crates.io/crates/psm) is an example of a package that requires write
+# access to `PRIVATE_TMPDIR` to build.
+
+0.1

@@ -11,7 +11,8 @@ use cargo_metadata::{Metadata, MetadataCommand};
 use once_cell::sync::Lazy;
 use std::{
     env,
-    fs::{copy, create_dir, write},
+    fs::{copy, create_dir, write, OpenOptions},
+    io::Write,
     path::Path,
     process::Command,
 };
@@ -50,13 +51,30 @@ pub fn build_with_default_linker() -> Command {
     command
 }
 
-pub fn temp_package(build_script_path: impl AsRef<Path>) -> Result<TempDir> {
+pub fn temp_package<'a, 'b>(
+    build_script_path: Option<impl AsRef<Path>>,
+    dependencies: impl IntoIterator<Item = (&'a str, &'b str)>,
+) -> Result<TempDir> {
     let tempdir = tempdir()?;
 
     write(tempdir.path().join("Cargo.toml"), CARGO_TOML)?;
-    copy(build_script_path, tempdir.path().join("build.rs"))?;
+    if let Some(build_script_path) = build_script_path {
+        copy(build_script_path, tempdir.path().join("build.rs"))?;
+    }
     create_dir(tempdir.path().join("src"))?;
     write(tempdir.path().join("src/lib.rs"), "")?;
+
+    let mut iter = dependencies.into_iter().peekable();
+
+    if iter.peek().is_some() {
+        let mut file = OpenOptions::new()
+            .append(true)
+            .open(tempdir.path().join("Cargo.toml"))?;
+        writeln!(file, "\n[dependencies]")?;
+        for (name, version) in iter {
+            writeln!(file, r#"{name} = "{version}""#)?;
+        }
+    }
 
     Ok(tempdir)
 }
@@ -71,10 +89,6 @@ publish = false
 [build-dependencies]
 libc = { version = "0.2", optional = true }
 rustc_version = { version = "0.4", optional = true }
-
-# smoelius: `psm` (https://crates.io/crates/psm) is an example of a package that requires write
-# access to `PRIVATE_TMPDIR` to build. `psm` isn't actually used by any of the integration tests.
-psm = { version = "0.1", optional = true }
 "#;
 
 static METADATA: Lazy<Metadata> = Lazy::new(|| MetadataCommand::new().no_deps().exec().unwrap());
