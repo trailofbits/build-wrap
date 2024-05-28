@@ -20,6 +20,7 @@ assert_cmd = "2.0"
 cargo_metadata = "0.18"
 ctor = "0.2"
 regex = "1.10"
+snapbox = "0.6"
 
 [lints.clippy]
 pedantic = { level = "warn", priority = -1 }

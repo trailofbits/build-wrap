@@ -1,3 +1,4 @@
+use snapbox::{assert_data_eq, Data};
 use std::{
     env::var_os,
     ffi::OsStr,
@@ -44,7 +45,7 @@ fn test_case(path: &Path) {
             path.with_extension("macos.stderr")
         }
     }
-    let expected_stderr_substring = read_to_string(stderr_path).unwrap();
+    let expected_stderr = read_to_string(&stderr_path).unwrap();
 
     let temp_package = util::temp_package(path).unwrap();
 
@@ -55,16 +56,16 @@ fn test_case(path: &Path) {
 
     let output = util::exec_forwarding_output(command, false).unwrap();
     assert_eq!(
-        expected_stderr_substring.is_empty(),
+        expected_stderr.is_empty(),
         output.status.success(),
         "{path:?} failed in {:?}",
         temp_package.into_path()
     );
 
-    let stderr = std::str::from_utf8(&output.stderr).unwrap();
-    assert!(
-        stderr.contains(expected_stderr_substring.trim_end()),
-        "`{}` stderr does not contain expected string:\n```\n{stderr}\n```",
-        path.display(),
-    );
+    if expected_stderr.is_empty() {
+        return;
+    }
+
+    let stderr_actual = std::str::from_utf8(&output.stderr).unwrap();
+    assert_data_eq!(stderr_actual, Data::read_from(&stderr_path, None));
 }
