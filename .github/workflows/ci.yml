@@ -53,7 +53,7 @@ jobs:
     strategy:
       fail-fast: ${{ github.event_name == 'merge_group' }}
       matrix:
-        environment: [ubuntu-latest, macos-latest]
+        environment: [ubuntu-latest, ubuntu-24.04, macos-latest]
 
     runs-on: ${{ matrix.environment }}
 
@@ -77,7 +77,7 @@ jobs:
           cargo install group-runner             || true
 
       - name: Install Bubblewrap
-        if: ${{ matrix.environment == 'ubuntu-latest' }}
+        if: ${{ runner.os == 'Linux' }}
         run: sudo apt install bubblewrap
 
       # smoelius: Go is needed for the `aws-lc-fips-sys` third-party test.
