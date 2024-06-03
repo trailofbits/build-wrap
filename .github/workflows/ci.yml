@@ -80,6 +80,11 @@ jobs:
         if: ${{ matrix.environment == 'ubuntu-latest' }}
         run: sudo apt install bubblewrap
 
+      # smoelius: Go is needed for the `aws-lc-fips-sys` third-party test.
+      - name: Install Go on macOS
+        if: ${{ matrix.environment == 'macos-latest' }}
+        run: brew install go
+
       - name: Build
         run: cargo test --no-run
 
