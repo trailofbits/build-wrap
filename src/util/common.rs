@@ -104,7 +104,7 @@ pub fn split_and_expand(build_script_path: &Path) -> Result<Vec<String>> {
     let args = split_escaped(cmd)?;
     let expanded_args = args
         .into_iter()
-        .map(|arg| __expand_cmd(&arg, build_script_path))
+        .map(|arg| expand_cmd(&arg, build_script_path))
         .collect::<Result<Vec<_>>>()?;
     eprintln!("expanded `BUILD_WRAP_CMD`: {:#?}", &expanded_args);
     ensure!(
@@ -171,9 +171,7 @@ fn split_escaped(mut s: &str) -> Result<Vec<String>> {
     Ok(v)
 }
 
-// smoelius: `__expand_cmd` is `pub` simply to allow testing it in an integration test. It is not
-// meant to be used outside of this module.
-pub fn __expand_cmd(mut cmd: &str, build_script_path: &Path) -> Result<String> {
+fn expand_cmd(mut cmd: &str, build_script_path: &Path) -> Result<String> {
     let build_script_path_as_str = build_script_path.to_utf8()?;
 
     let mut buf = String::new();
@@ -241,4 +239,41 @@ fn var(key: &str) -> Result<String, env::VarError> {
 
 fn enabled(name: &str) -> bool {
     env::var(name).map_or(false, |value| value != "0")
+}
+
+#[cfg(test)]
+mod test {
+    use anyhow::Result;
+    use std::{env::set_var, path::Path};
+
+    #[test]
+    fn expand_cmd() {
+        set_var("KEY", "VALUE");
+
+        let successes = [
+            ("left path right", "{}"),
+            ("left VALUE right", "{KEY}"),
+            ("left { right", "{{"),
+            ("left } right", "}}"),
+        ];
+
+        let failures = [
+            ("environment variable `UNKNOWN` not found", "{UNKNOWN}"),
+            ("unbalanced '{'", "{"),
+            ("unbalanced '}'", "}"),
+        ];
+
+        for (expected, s) in successes {
+            assert_eq!(expected, surround_and_expand(s).unwrap());
+        }
+
+        for (expected, s) in failures {
+            assert_eq!(expected, surround_and_expand(s).unwrap_err().to_string());
+        }
+    }
+
+    fn surround_and_expand(s: &str) -> Result<String> {
+        let cmd = String::from("left ") + s + " right";
+        super::expand_cmd(&cmd, Path::new("path"))
+    }
 }

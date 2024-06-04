@@ -4,11 +4,6 @@ use std::{env, ffi::OsString, fs::canonicalize, path::PathBuf, process::Command}
 mod common;
 pub use common::{exec_forwarding_output, ToUtf8};
 
-// smoelius: `__expand_cmd` is not meant to be used outside of this module. See the comment
-// preceding `__expand_cmd`.
-#[allow(unused_imports)]
-pub use common::__expand_cmd;
-
 pub const DEFAULT_LD: &str = "cc";
 
 #[must_use]
