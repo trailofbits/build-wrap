@@ -1,6 +1,5 @@
+use crate::util;
 use std::{env::temp_dir, path::Path, process::Command};
-
-pub mod util;
 
 const DIR: &str = "fixtures/cargo_config";
 

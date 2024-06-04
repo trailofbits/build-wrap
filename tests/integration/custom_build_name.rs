@@ -1,13 +1,12 @@
+use crate::util;
 use std::{path::Path, process::Command};
-
-pub mod util;
 
 #[test]
 fn custom_build_name() {
     let dir = Path::new("fixtures/custom_build_name");
 
     let status = Command::new("cargo")
-        .arg("clean")
+        .args(["clean", "--quiet"])
         .current_dir(dir)
         .status()
         .unwrap();

@@ -30,6 +30,9 @@ pub fn cargo_build() -> Command {
     command
 }
 
+// smoelius: The present module is imported by tests/integration/util.rs. The next `allow` prevents
+// a "function `which` is never used" warning in that module.
+#[allow(dead_code)]
 pub fn which(filename: &str) -> Result<PathBuf> {
     let mut command = Command::new("which");
     let output = command.arg(filename).output()?;

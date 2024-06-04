@@ -1,7 +1,6 @@
+use crate::util;
 use anyhow::Result;
 use std::{env::set_var, path::Path};
-
-pub mod util;
 
 #[test]
 fn expand_cmd() {
