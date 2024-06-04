@@ -6,6 +6,5 @@ mod ci;
 mod custom_build_name;
 mod dogfood;
 mod enabled;
-mod expand_cmd;
 mod third_party;
 mod util;
