@@ -1,3 +1,4 @@
+use crate::util;
 use anyhow::{Context, Result};
 use assert_cmd::Command;
 use cargo_metadata::MetadataCommand;
@@ -7,8 +8,6 @@ use std::{
     fs::{create_dir_all, write},
     path::PathBuf,
 };
-
-pub mod util;
 
 #[test]
 fn enabled() {

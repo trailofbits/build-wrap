@@ -1,4 +1,4 @@
-pub mod util;
+use crate::util;
 
 #[test]
 fn allow() {

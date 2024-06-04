@@ -1,6 +1,5 @@
+use crate::util;
 use std::process::Command;
-
-pub mod util;
 
 #[test]
 fn build_wrap_cmd_changed() {
@@ -28,7 +27,7 @@ fn build_wrap_cmd_changed() {
     // smoelius: Clean and build again with `BUILD_WRAP_CMD` set to `time -p {}`.
 
     let status = Command::new("cargo")
-        .arg("clean")
+        .args(["clean", "--quiet"])
         .current_dir(&temp_package)
         .status()
         .unwrap();

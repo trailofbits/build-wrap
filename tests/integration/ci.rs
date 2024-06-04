@@ -1,8 +1,7 @@
+use crate::util;
 use assert_cmd::Command;
 use regex::Regex;
 use std::{fs::read_to_string, path::Path};
-
-pub mod util;
 
 #[test]
 fn clippy() {

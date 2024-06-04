@@ -9,16 +9,17 @@
 use anyhow::Result;
 use cargo_metadata::{Metadata, MetadataCommand};
 use once_cell::sync::Lazy;
+use snapbox::{assert_data_eq, Data};
 use std::{
     env,
-    fs::{copy, create_dir, write, OpenOptions},
+    fs::{copy, create_dir, read_to_string, write, OpenOptions},
     io::Write,
     path::Path,
     process::Command,
 };
 use tempfile::{tempdir_in, TempDir};
 
-#[path = "../src/util/mod.rs"]
+#[path = "../../src/util/mod.rs"]
 mod main_util;
 pub use main_util::*;
 
@@ -99,4 +100,48 @@ static METADATA: Lazy<Metadata> = Lazy::new(|| MetadataCommand::new().no_deps().
 /// `/tmp` is writeable, for example.
 pub fn tempdir() -> Result<TempDir> {
     tempdir_in(&METADATA.target_directory).map_err(Into::into)
+}
+
+#[derive(Debug)]
+pub enum TestCase<'a> {
+    BuildScript(&'a Path),
+    ThirdParty(&'a str, &'a str),
+}
+
+pub fn test_case(test_case: &TestCase, stderr_path: &Path) {
+    let mut stderr_path = stderr_path.to_path_buf();
+    if !stderr_path.exists() {
+        stderr_path = if cfg!(target_os = "linux") {
+            stderr_path.with_extension("linux.stderr")
+        } else {
+            stderr_path.with_extension("macos.stderr")
+        }
+    }
+    let expected_stderr = read_to_string(&stderr_path).unwrap();
+
+    let temp_package = match *test_case {
+        TestCase::BuildScript(path) => temp_package(Some(path), []),
+        TestCase::ThirdParty(name, version) => temp_package(None::<&Path>, [(name, version)]),
+    }
+    .unwrap();
+
+    let mut command = build_with_build_wrap();
+    // smoelius: `--all-features` to enable optional build dependencies.
+    command.arg("--all-features");
+    command.current_dir(&temp_package);
+
+    let output = exec_forwarding_output(command, false).unwrap();
+    assert_eq!(
+        expected_stderr.is_empty(),
+        output.status.success(),
+        "{test_case:?} failed in {:?}",
+        temp_package.into_path()
+    );
+
+    if expected_stderr.is_empty() {
+        return;
+    }
+
+    let stderr_actual = std::str::from_utf8(&output.stderr).unwrap();
+    assert_data_eq!(stderr_actual, Data::read_from(&stderr_path, None));
 }
