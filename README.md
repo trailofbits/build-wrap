@@ -20,15 +20,9 @@ Installing `build-wrap` requires two steps:
 
 ### Ubuntu 24.04
 
-Ubuntu's default AppArmor profiles [changed with version 24.04]. The changes [affect `bubble-wrap`], which in turn affect `build-wrap`. Thus, installing `build-wrap` on Ubuntu 24.04 requires some additional steps:
+Ubuntu's default AppArmor profiles [changed with version 24.04]. The changes [affect `bubble-wrap`], which in turn affect `build-wrap`.
 
-```sh
-sudo add-apt-repository ppa:apparmor-dev/apparmor-sru
-sudo apt update
-sudo apt install apparmor
-```
-
-Canonical developers are considering [additional changes] to make the above steps no longer necessary. We will update this documentation should those additional changes be incorporated.
+The easiest way to make `build-wrap` work in the presence of these changes is to install the [proposed AppArmor update]. One can do this by [enabling "Pre-released updates"] in "Software & Updates". Alternatively, the linked page includes instructions for selectively upgrading packages.
 
 ## Environment variables that `build-wrap` reads
 
@@ -120,7 +114,8 @@ Given a build script `B`, its "wrapped" version `B'` contains a copy of `B` and 
 [`BUILD_WRAP_CMD` is expanded]: #how-build_wrap_cmd-is-expanded
 [`cc-rs`]: https://github.com/rust-lang/cc-rs
 [`sandbox-exec`]: https://keith.github.io/xcode-man-pages/sandbox-exec.1.html
-[additional changes]: https://bugs.launchpad.net/ubuntu/+source/apparmor/+bug/2064672
 [affect `bubble-wrap`]: https://github.com/containers/bubblewrap/issues/505#issuecomment-2093203129
 [changed with version 24.04]: https://ubuntu.com/blog/ubuntu-23-10-restricted-unprivileged-user-namespaces
+[enabling "Pre-released updates"]: https://wiki.ubuntu.com/Testing/EnableProposed
 [manner described above]: #how-build_wrap_cmd-is-expanded
+[proposed AppArmor update]: https://launchpad.net/ubuntu/+source/apparmor/4.0.1-0ubuntu0.24.04.2
