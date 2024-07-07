@@ -7,10 +7,6 @@ edition = "2021"
 license = "AGPL-3.0"
 repository = "https://github.com/trailofbits/build-wrap"
 
-[[test]]
-name = "integration"
-path = "tests/integration/mod.rs"
-
 # smoelius: This list of dependencies should match what is in src/wrapper.rs.
 [dependencies]
 anyhow = "1.0"
