@@ -20,19 +20,7 @@ const LINUX_DEFAULT_CMD: &str = "bwrap
 
 // smoelius: The following blog post is a useful `sandbox-exec` reference:
 // https://7402.org/blog/2020/macos-sandboxing-of-folder.html
-const MACOS_DEFAULT_CMD: &str = r#"sandbox-exec -p
-(version\ 1)\
-(deny\ default)\
-(allow\ file-read*)\
-(allow\ file-write*\ (subpath\ "/dev"))\
-(allow\ file-write*\ (subpath\ "{OUT_DIR}"))\
-(allow\ file-write*\ (subpath\ "{TMPDIR}"))\
-(allow\ file-write*\ (subpath\ "{PRIVATE_TMPDIR}"))\
-(allow\ process-exec)\
-(allow\ process-fork)\
-(allow\ sysctl-read)\
-(deny\ network*)
-{}"#;
+const MACOS_DEFAULT_CMD: &str = "sandbox-exec -f {BUILD_WRAP_PROFILE_PATH} {}";
 
 const DEFAULT_CMD: &str = if cfg!(target_os = "linux") {
     LINUX_DEFAULT_CMD
@@ -159,5 +147,13 @@ mod test {
         let re = Regex::new("\\s+").unwrap();
         let cmd = re.replace_all(super::LINUX_DEFAULT_CMD, " ");
         super::util::assert_readme_contains_code_block(std::iter::once(cmd), Some("sh"));
+    }
+
+    #[test]
+    fn readme_contains_macos_default_cmd() {
+        super::util::assert_readme_contains_code_block(
+            std::iter::once(super::MACOS_DEFAULT_CMD),
+            Some("sh"),
+        );
     }
 }
