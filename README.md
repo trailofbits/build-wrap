@@ -20,6 +20,8 @@ Installing `build-wrap` requires two steps:
 
 ## Environment variables that `build-wrap` reads
 
+Note that the below environment variables are read **when a build script is linked**. So, for example, changing `BUILD_WRAP_CMD` will not change the command used to execute already linked build scripts.
+
 - `BUILD_WRAP_ALLOW`: When set to a value other than `0`, `build-wrap` uses the following weakened strategy. If running a build script under `BUILD_WRAP_CMD` fails, report the failure and rerun the build script normally.
 
   Note that to see the reported failures, you must invoke Cargo with the `-vv` (["very verbose"]) flag, e.g.:
@@ -63,8 +65,6 @@ Installing `build-wrap` requires two steps:
   Note that `(version\ 1)\ ... (deny\ network*)` expands to a single string (see [How `BUILD_WRAP_CMD` is expanded] below).
 
 - `BUILD_WRAP_LD`: Linker to use. Default: `cc`
-
-Note that the above environment variables are read **when the build script is linked**. So, for example, changing `BUILD_WRAP_CMD` will not change the command used to execute already linked build scripts.
 
 ## Environment variables that `build-wrap` treats as set
 
