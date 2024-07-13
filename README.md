@@ -55,28 +55,34 @@ Note that the below environment variables are read **when a build script is link
   macOS default:
 
   ```sh
-  sandbox-exec -p
-  (version\ 1)\
-  (deny\ default)\
-  (allow\ file-read*)\                                 # Allow read-only access everywhere
-  (allow\ file-write*\ (subpath\ "/dev"))\             # Allow write access to /dev
-  (allow\ file-write*\ (subpath\ "{OUT_DIR}"))\        # Allow write access to `OUT_DIR`
-  (allow\ file-write*\ (subpath\ "{TMPDIR}"))\         # Allow write access to `TMPDIR`
-  (allow\ file-write*\ (subpath\ "{PRIVATE_TMPDIR}"))\ # Allow write access to `PRIVATE_TMPDIR` (see below)
-  (allow\ process-exec)\                               # Allow `exec`
-  (allow\ process-fork)\                               # Allow `fork`
-  (allow\ sysctl-read)\                                # Allow reading kernel state
-  (deny\ network*)                                     # Deny network access
-  {}                                                   # Build script path
+  sandbox-exec -f {BUILD_WRAP_PROFILE_PATH} {}
   ```
 
-  Note that `(version\ 1)\ ... (deny\ network*)` expands to a single string (see [How `BUILD_WRAP_CMD` is expanded] below).
+  See [Environment variables that `build-wrap` treats as set] regarding `BUILD_WRAP_PROFILE_PATH`.
 
 - `BUILD_WRAP_LD`: Linker to use. Default: `cc`
+
+- `BUILD_WRAP_PROFILE`: macOS only. `build-wrap` expands `BUILD_WRAP_PROFILE` [as it would `BUILD_WRAP_CMD`], and writes the results to a temporary file. `BUILD_WRAP_PROFILE_PATH` then expands to the absolute path of that temporary file. Default:
+
+  ```
+  (version 1)
+  (deny default)
+  (allow file-read*)                               ;; Allow read-only access everywhere
+  (allow file-write* (subpath "/dev"))             ;; Allow write access to /dev
+  (allow file-write* (subpath "{OUT_DIR}"))        ;; Allow write access to `OUT_DIR`
+  (allow file-write* (subpath "{TMPDIR}"))         ;; Allow write access to `TMPDIR`
+  (allow file-write* (subpath "{PRIVATE_TMPDIR}")) ;; Allow write access to `PRIVATE_TMPDIR` (see below)
+  (allow process-exec)                             ;; Allow `exec`
+  (allow process-fork)                             ;; Allow `fork`
+  (allow sysctl-read)                              ;; Allow reading kernel state
+  (deny network*)                                  ;; Deny network access
+  ```
 
 ## Environment variables that `build-wrap` treats as set
 
 Note that we say "treats as set" because these are considered only when [`BUILD_WRAP_CMD` is expanded].
+
+- `BUILD_WRAP_PROFILE_PATH`: Expands to the absolute path of a temporary file containing the expanded contents of `BUILD_WRAP_PROFILE`.
 
 - `PRIVATE_TMPDIR`: If `TMPDIR` is set to a path in `/private` (as is typical on macOS), then `PRIVATE_TMPDIR` expands to that path. This is needed for some build scripts that use [`cc-rs`], though the exact reason it is needed is still unknown.
 
@@ -111,9 +117,10 @@ Given a build script `B`, its "wrapped" version `B'` contains a copy of `B` and 
 ["very verbose"]: https://doc.rust-lang.org/cargo/reference/build-scripts.html#outputs-of-the-build-script
 [Bubblewrap]: https://github.com/containers/bubblewrap
 [Environment variables that `build-wrap` reads]: #environment-variables-that-build-wrap-reads
-[How `BUILD_WRAP_CMD` is expanded]: #how-build_wrap_cmd-is-expanded
+[Environment variables that `build-wrap` treats as set]: #environment-variables-that-build-wrap-treats-as-set
 [How `build-wrap` works]: #how-build-wrap-works
 [`BUILD_WRAP_CMD` is expanded]: #how-build_wrap_cmd-is-expanded
 [`cc-rs`]: https://github.com/rust-lang/cc-rs
 [`sandbox-exec`]: https://keith.github.io/xcode-man-pages/sandbox-exec.1.html
+[as it would `BUILD_WRAP_CMD`]: #how-build_wrap_cmd-is-expanded
 [manner described above]: #how-build_wrap_cmd-is-expanded

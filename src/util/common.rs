@@ -13,6 +13,20 @@ use std::{
 };
 use tempfile::NamedTempFile;
 
+#[allow(dead_code)]
+const DEFAULT_PROFILE: &str = r#"(version 1)
+(deny default)
+(allow file-read*)                               ;; Allow read-only access everywhere
+(allow file-write* (subpath "/dev"))             ;; Allow write access to /dev
+(allow file-write* (subpath "{OUT_DIR}"))        ;; Allow write access to `OUT_DIR`
+(allow file-write* (subpath "{TMPDIR}"))         ;; Allow write access to `TMPDIR`
+(allow file-write* (subpath "{PRIVATE_TMPDIR}")) ;; Allow write access to `PRIVATE_TMPDIR` (see below)
+(allow process-exec)                             ;; Allow `exec`
+(allow process-fork)                             ;; Allow `fork`
+(allow sysctl-read)                              ;; Allow reading kernel state
+(deny network*)                                  ;; Deny network access
+"#;
+
 /// Executes `command`, forwards its output to stdout and stderr, and optionally checks whether
 /// `command` succeeded.
 ///
@@ -104,7 +118,7 @@ pub fn split_and_expand(build_script_path: &Path) -> Result<Vec<String>> {
     let args = split_escaped(cmd)?;
     let expanded_args = args
         .into_iter()
-        .map(|arg| expand(&arg, build_script_path))
+        .map(|arg| expand(&arg, Some(build_script_path)))
         .collect::<Result<Vec<_>>>()?;
     eprintln!("expanded `BUILD_WRAP_CMD`: {:#?}", &expanded_args);
     ensure!(
@@ -171,8 +185,10 @@ fn split_escaped(mut s: &str) -> Result<Vec<String>> {
     Ok(v)
 }
 
-fn expand(mut cmd: &str, build_script_path: &Path) -> Result<String> {
-    let build_script_path_as_str = build_script_path.to_utf8()?;
+fn expand(mut cmd: &str, build_script_path: Option<&Path>) -> Result<String> {
+    let build_script_path_as_str = build_script_path
+        .map(|path| path.to_utf8().map(ToOwned::to_owned))
+        .transpose()?;
 
     let mut buf = String::new();
 
@@ -197,7 +213,10 @@ fn expand(mut cmd: &str, build_script_path: &Path) -> Result<String> {
         if c == b'{' {
             if let Some(j) = cmd.find('}') {
                 if j == 0 {
-                    buf.push_str(build_script_path_as_str);
+                    let s = build_script_path_as_str
+                        .as_ref()
+                        .ok_or_else(|| anyhow!("build script path is unavailable"))?;
+                    buf.push_str(s);
                 } else {
                     let key = &cmd[..j];
                     let value = var(key)
@@ -218,6 +237,17 @@ fn expand(mut cmd: &str, build_script_path: &Path) -> Result<String> {
     Ok(buf)
 }
 
+#[cfg(target_os = "macos")]
+static BUILD_WRAP_PROFILE_PATH: Lazy<String> = Lazy::new(|| {
+    let tempfile = NamedTempFile::new().unwrap();
+    let (mut file, temp_path) = tempfile.into_parts();
+    let profile = var("BUILD_WRAP_PROFILE").unwrap_or(DEFAULT_PROFILE.to_owned());
+    let expanded_profile = expand(&profile, None).unwrap();
+    file.write_all(expanded_profile.as_bytes()).unwrap();
+    let path = temp_path.keep().unwrap();
+    path.to_utf8().map(ToOwned::to_owned).unwrap()
+});
+
 static PRIVATE_TMPDIR: Lazy<Option<String>> = Lazy::new(|| {
     var("TMPDIR").ok().and_then(|value| {
         let path = canonicalize(value).ok()?;
@@ -230,6 +260,11 @@ static PRIVATE_TMPDIR: Lazy<Option<String>> = Lazy::new(|| {
 });
 
 fn var(key: &str) -> Result<String, env::VarError> {
+    #[cfg(target_os = "macos")]
+    if key == "BUILD_WRAP_PROFILE_PATH" {
+        return Ok(BUILD_WRAP_PROFILE_PATH.clone());
+    }
+
     if key == "PRIVATE_TMPDIR" {
         return PRIVATE_TMPDIR.clone().ok_or(env::VarError::NotPresent);
     }
@@ -277,10 +312,14 @@ mod test {
 
     fn surround_and_expand(s: &str) -> Result<String> {
         let cmd = String::from("left ") + s + " right";
-        super::expand(&cmd, Path::new("path"))
+        super::expand(&cmd, Some(Path::new("path")))
     }
 
-    #[allow(dead_code)]
+    #[test]
+    fn readme_contains_default_profile() {
+        assert_readme_contains_code_block(super::DEFAULT_PROFILE.lines(), None);
+    }
+
     pub fn assert_readme_contains_code_block(
         lines: impl Iterator<Item = impl AsRef<str>>,
         language: Option<&str>,
