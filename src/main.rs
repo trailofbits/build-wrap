@@ -10,18 +10,17 @@ mod linking;
 mod util;
 mod wrapper;
 
-const DEFAULT_CMD: &str = if cfg!(target_os = "linux") {
-    "bwrap
+const LINUX_DEFAULT_CMD: &str = "bwrap
     --ro-bind / /
     --dev-bind /dev /dev
     --bind {OUT_DIR} {OUT_DIR}
     --bind /tmp /tmp
     --unshare-net
-    {}"
-} else {
-    // smoelius: The following blog post is a useful `sandbox-exec` reference:
-    // https://7402.org/blog/2020/macos-sandboxing-of-folder.html
-    r#"sandbox-exec -p
+    {}";
+
+// smoelius: The following blog post is a useful `sandbox-exec` reference:
+// https://7402.org/blog/2020/macos-sandboxing-of-folder.html
+const MACOS_DEFAULT_CMD: &str = r#"sandbox-exec -p
 (version\ 1)\
 (deny\ default)\
 (allow\ file-read*)\
@@ -33,7 +32,12 @@ const DEFAULT_CMD: &str = if cfg!(target_os = "linux") {
 (allow\ process-fork)\
 (allow\ sysctl-read)\
 (deny\ network*)
-{}"#
+{}"#;
+
+const DEFAULT_CMD: &str = if cfg!(target_os = "linux") {
+    LINUX_DEFAULT_CMD
+} else {
+    MACOS_DEFAULT_CMD
 };
 
 fn main() -> Result<()> {
