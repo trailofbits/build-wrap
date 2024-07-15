@@ -242,9 +242,12 @@ fn enabled(name: &str) -> bool {
 }
 
 #[cfg(test)]
+pub use test::assert_readme_contains_code_block;
+
+#[cfg(test)]
 mod test {
     use anyhow::Result;
-    use std::{env::set_var, path::Path};
+    use std::{env::set_var, fs::read_to_string, path::Path};
 
     #[test]
     fn expand_cmd() {
@@ -275,5 +278,26 @@ mod test {
     fn surround_and_expand(s: &str) -> Result<String> {
         let cmd = String::from("left ") + s + " right";
         super::expand_cmd(&cmd, Path::new("path"))
+    }
+
+    #[allow(dead_code)]
+    pub fn assert_readme_contains_code_block(
+        lines: impl Iterator<Item = impl AsRef<str>>,
+        language: Option<&str>,
+    ) {
+        let delimited_lines = std::iter::once(format!("```{}", language.unwrap_or_default()))
+            .chain(lines.map(|s| s.as_ref().to_owned()))
+            .chain(std::iter::once(String::from("```")))
+            .collect::<Vec<_>>();
+        let size = delimited_lines.len();
+        let readme = read_to_string("README.md").unwrap();
+        let readme_lines = readme
+            .lines()
+            .map(|line| {
+                let index = line.find('#').unwrap_or(line.len());
+                line[..index].trim()
+            })
+            .collect::<Vec<_>>();
+        assert!(readme_lines.windows(size).any(|w| w == delimited_lines));
     }
 }

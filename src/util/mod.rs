@@ -4,6 +4,10 @@ use std::{env, ffi::OsString, fs::canonicalize, path::PathBuf, process::Command}
 mod common;
 pub use common::{exec_forwarding_output, ToUtf8};
 
+#[cfg(test)]
+#[allow(unused_imports)]
+pub use common::assert_readme_contains_code_block;
+
 pub const DEFAULT_LD: &str = "cc";
 
 #[must_use]
