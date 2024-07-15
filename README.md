@@ -32,15 +32,23 @@ Note that the below environment variables are read **when a build script is link
 
 - `BUILD_WRAP_CMD`: Command used to execute a build script. Linux default:
 
-  ```sh
-  bwrap
-    --ro-bind / /              # Allow read-only access everywhere
-    --dev-bind /dev /dev       # Allow device access
-    --bind {OUT_DIR} {OUT_DIR} # Allow write access to `OUT_DIR`
-    --bind /tmp /tmp           # Allow write access to /tmp
-    --unshare-net              # Deny network access
-    {}                         # Build script path
-  ```
+  - With comments:
+
+    ```sh
+    bwrap
+      --ro-bind / /              # Allow read-only access everywhere
+      --dev-bind /dev /dev       # Allow device access
+      --bind {OUT_DIR} {OUT_DIR} # Allow write access to `OUT_DIR`
+      --bind /tmp /tmp           # Allow write access to /tmp
+      --unshare-net              # Deny network access
+      {}                         # Build script path
+    ```
+
+  - On one line (for copying-and-pasting):
+
+    ```sh
+    bwrap --ro-bind / / --dev-bind /dev /dev --bind {OUT_DIR} {OUT_DIR} --bind /tmp /tmp --unshare-net {}
+    ```
 
   Note that `bwrap` is [Bubblewrap].
 
