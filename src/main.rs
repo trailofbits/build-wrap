@@ -134,6 +134,8 @@ fn enabled() -> Result<bool> {
 
 #[cfg(test)]
 mod test {
+    use regex::Regex;
+
     #[test]
     fn help() {
         super::run(&["build-wrap".to_owned(), "--help".to_owned()]).unwrap();
@@ -142,5 +144,20 @@ mod test {
     #[test]
     fn version() {
         super::run(&["build-wrap".to_owned(), "--version".to_owned()]).unwrap();
+    }
+
+    #[test]
+    fn readme_contains_linux_default_cmd_with_comments() {
+        super::util::assert_readme_contains_code_block(
+            super::LINUX_DEFAULT_CMD.lines().map(str::trim_start),
+            Some("sh"),
+        );
+    }
+
+    #[test]
+    fn readme_contains_linux_default_cmd_on_one_line() {
+        let re = Regex::new("\\s+").unwrap();
+        let cmd = re.replace_all(super::LINUX_DEFAULT_CMD, " ");
+        super::util::assert_readme_contains_code_block(std::iter::once(cmd), Some("sh"));
     }
 }
