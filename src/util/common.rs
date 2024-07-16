@@ -104,7 +104,7 @@ pub fn split_and_expand(build_script_path: &Path) -> Result<Vec<String>> {
     let args = split_escaped(cmd)?;
     let expanded_args = args
         .into_iter()
-        .map(|arg| expand_cmd(&arg, build_script_path))
+        .map(|arg| expand(&arg, build_script_path))
         .collect::<Result<Vec<_>>>()?;
     eprintln!("expanded `BUILD_WRAP_CMD`: {:#?}", &expanded_args);
     ensure!(
@@ -171,7 +171,7 @@ fn split_escaped(mut s: &str) -> Result<Vec<String>> {
     Ok(v)
 }
 
-fn expand_cmd(mut cmd: &str, build_script_path: &Path) -> Result<String> {
+fn expand(mut cmd: &str, build_script_path: &Path) -> Result<String> {
     let build_script_path_as_str = build_script_path.to_utf8()?;
 
     let mut buf = String::new();
@@ -277,7 +277,7 @@ mod test {
 
     fn surround_and_expand(s: &str) -> Result<String> {
         let cmd = String::from("left ") + s + " right";
-        super::expand_cmd(&cmd, Path::new("path"))
+        super::expand(&cmd, Path::new("path"))
     }
 
     #[allow(dead_code)]
