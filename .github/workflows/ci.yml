@@ -80,14 +80,6 @@ jobs:
         if: ${{ runner.os == 'Linux' }}
         run: sudo apt install bubblewrap
 
-      # smoelius: https://launchpad.net/~apparmor-dev/+archive/ubuntu/apparmor-sru
-      - name: Install staged AppArmor update
-        if: ${{ matrix.environment == 'ubuntu-24.04' }}
-        run: |
-          sudo add-apt-repository ppa:apparmor-dev/apparmor-sru
-          sudo apt update
-          sudo apt install apparmor
-
       # smoelius: Go is needed for the `aws-lc-fips-sys` third-party test.
       - name: Install Go on macOS
         if: ${{ matrix.environment == 'macos-latest' }}
