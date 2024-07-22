@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.1
+
+- Reduce error message verbosity ([58](https://github.com/trailofbits/build-wrap/pull/58))
+
 ## 0.3.0
 
 - FEATURE: Show whether `build-wrap` is enabled in help message ([72a5991](https://github.com/trailofbits/build-wrap/commit/72a5991c7cdc55250f78692598cc9ff48e23d338))
