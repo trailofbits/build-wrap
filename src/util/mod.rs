@@ -24,7 +24,9 @@ pub fn cargo_build() -> Command {
 
     // smoelius: Show linker output.
     // See: https://stackoverflow.com/a/71866183
-    command.env("RUSTC_LOG", "rustc_codegen_ssa::back::link=info");
+    // smoelius: Disabling this in the interest of reducing error message verbosity. Note that this
+    // change affects only `build-wrap`'s building of wrapped build scripts.
+    // command.env("RUSTC_LOG", "rustc_codegen_ssa::back::link=info");
 
     command
 }
