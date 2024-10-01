@@ -80,6 +80,13 @@ jobs:
         if: ${{ runner.os == 'Linux' }}
         run: sudo apt install bubblewrap
 
+      - name: Install Bubblewrap profile on Ubuntu 24.04
+        if: ${{ matrix.environment == 'ubuntu-24.04' }}
+        run: |
+          sudo apt install apparmor-profiles
+          sudo cp /usr/share/apparmor/extra-profiles/bwrap-userns-restrict /etc/apparmor.d
+          sudo systemctl restart apparmor
+
       # smoelius: Go is needed for the `aws-lc-fips-sys` third-party test.
       - name: Install Go on macOS
         if: ${{ matrix.environment == 'macos-latest' }}
