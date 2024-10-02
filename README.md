@@ -28,7 +28,7 @@ sudo cp /usr/share/apparmor/extra-profiles/bwrap-userns-restrict /etc/apparmor.d
 sudo systemctl restart apparmor
 ```
 
-Note that following these additional steps, Bubblewrap still runs unprivileged. More information on AppArmor profiles can be found on [Ubuntu Server] and the [Ubuntu Wiki].
+Note that following these additional steps, Bubblewrap still runs unprivileged. More information on AppArmor profiles can be found on [Ubuntu Server] and the [Ubuntu Community Wiki].
 
 ## Environment variables that `build-wrap` reads
 
@@ -131,8 +131,8 @@ Given a build script `B`, its "wrapped" version `B'` contains a copy of `B` and 
 [Environment variables that `build-wrap` reads]: #environment-variables-that-build-wrap-reads
 [Environment variables that `build-wrap` treats as set]: #environment-variables-that-build-wrap-treats-as-set
 [How `build-wrap` works]: #how-build-wrap-works
-[Ubuntu Server]: https://ubuntu.com/server/docs/apparmor
-[Ubuntu Wiki]: https://wiki.ubuntu.com/AppArmor
+[Ubuntu Community Wiki]: https://help.ubuntu.com/community/AppArmor
+[Ubuntu Server]: https://documentation.ubuntu.com/server/how-to/security/apparmor/
 [`BUILD_WRAP_CMD` is expanded]: #how-build_wrap_cmd-is-expanded
 [`cc-rs`]: https://github.com/rust-lang/cc-rs
 [`sandbox-exec`]: https://keith.github.io/xcode-man-pages/sandbox-exec.1.html
