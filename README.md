@@ -18,6 +18,18 @@ Installing `build-wrap` requires two steps:
    linker = "build-wrap"
    ```
 
+### Ubuntu 24.04
+
+Ubuntu's default AppArmor profiles [changed with version 24.04]. The changes [affect Bubblewrap], which in turn affect `build-wrap`. Thus, installing `build-wrap` on Ubuntu 24.04 requires some additional steps:
+
+```sh
+sudo apt install apparmor-profiles
+sudo cp /usr/share/apparmor/extra-profiles/bwrap-userns-restrict /etc/apparmor.d
+sudo systemctl restart apparmor
+```
+
+Note that following these additional steps, Bubblewrap still runs unprivileged. More information on AppArmor profiles can be found on [Ubuntu Server] and the [Ubuntu Wiki].
+
 ## Environment variables that `build-wrap` reads
 
 Note that the below environment variables are read **when a build script is linked**. So, for example, changing `BUILD_WRAP_CMD` will not change the command used to execute already linked build scripts.
@@ -119,8 +131,12 @@ Given a build script `B`, its "wrapped" version `B'` contains a copy of `B` and 
 [Environment variables that `build-wrap` reads]: #environment-variables-that-build-wrap-reads
 [Environment variables that `build-wrap` treats as set]: #environment-variables-that-build-wrap-treats-as-set
 [How `build-wrap` works]: #how-build-wrap-works
+[Ubuntu Server]: https://ubuntu.com/server/docs/apparmor
+[Ubuntu Wiki]: https://wiki.ubuntu.com/AppArmor
 [`BUILD_WRAP_CMD` is expanded]: #how-build_wrap_cmd-is-expanded
 [`cc-rs`]: https://github.com/rust-lang/cc-rs
 [`sandbox-exec`]: https://keith.github.io/xcode-man-pages/sandbox-exec.1.html
+[affect Bubblewrap]: https://github.com/containers/bubblewrap/issues/505#issuecomment-2093203129
 [as it would `BUILD_WRAP_CMD`]: #how-build_wrap_cmd-is-expanded
+[changed with version 24.04]: https://ubuntu.com/blog/ubuntu-23-10-restricted-unprivileged-user-namespaces
 [manner described above]: #how-build_wrap_cmd-is-expanded
