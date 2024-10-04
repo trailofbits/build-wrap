@@ -25,7 +25,7 @@ Ubuntu's default AppArmor profiles [changed with version 24.04]. The changes [af
 ```sh
 sudo apt install apparmor-profiles
 sudo cp /usr/share/apparmor/extra-profiles/bwrap-userns-restrict /etc/apparmor.d
-sudo systemctl restart apparmor
+sudo systemctl reload apparmor
 ```
 
 Note that following these additional steps, Bubblewrap still runs unprivileged. More information on AppArmor profiles can be found on [Ubuntu Server] and the [Ubuntu Community Wiki].

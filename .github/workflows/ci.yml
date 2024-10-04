@@ -85,7 +85,7 @@ jobs:
         run: |
           sudo apt install apparmor-profiles
           sudo cp /usr/share/apparmor/extra-profiles/bwrap-userns-restrict /etc/apparmor.d
-          sudo systemctl restart apparmor
+          sudo systemctl reload apparmor
 
       # smoelius: Go is needed for the `aws-lc-fips-sys` third-party test.
       - name: Install Go on macOS
