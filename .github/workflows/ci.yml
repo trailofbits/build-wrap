@@ -53,7 +53,7 @@ jobs:
     strategy:
       fail-fast: ${{ github.event_name == 'merge_group' }}
       matrix:
-        environment: [ubuntu-latest, ubuntu-24.04, macos-latest]
+        environment: [ubuntu-latest, macos-latest]
 
     runs-on: ${{ matrix.environment }}
 
@@ -80,8 +80,8 @@ jobs:
         if: ${{ runner.os == 'Linux' }}
         run: sudo apt install bubblewrap
 
-      - name: Install Bubblewrap profile on Ubuntu 24.04
-        if: ${{ matrix.environment == 'ubuntu-24.04' }}
+      - name: Install Bubblewrap profile on Ubuntu
+        if: ${{ matrix.environment == 'ubuntu-latest' }}
         run: |
           sudo apt install apparmor-profiles
           sudo cp /usr/share/apparmor/extra-profiles/bwrap-userns-restrict /etc/apparmor.d
