@@ -1,9 +1,13 @@
 use anyhow::{bail, Context, Result};
 use once_cell::sync::Lazy;
+use regex::Regex;
 use std::{
+    collections::BTreeMap,
     env::{args, current_exe},
     fs::read_to_string,
     io::{stdout, IsTerminal},
+    path::Path,
+    str::FromStr,
 };
 
 mod linking;
@@ -90,9 +94,25 @@ To enable build-wrap, create a `.cargo/config.toml` file in your home directory 
 ```
 [target.'cfg(all())']
 linker = "build-wrap"
-```"#
+```{}"#,
+        if noble_numbat_or_later().unwrap_or(cfg!(target_os = "linux")) {
+            "
+
+And install the Bubblewrap AppArmor profile with the following commands:
+
+```
+sudo apt install apparmor-profiles
+sudo cp /usr/share/apparmor/extra-profiles/bwrap-userns-restrict /etc/apparmor.d
+sudo systemctl reload apparmor
+```"
+        } else {
+            ""
+        }
     );
 }
+
+static BWRAP_APPARMOR_PROFILE_PATH: Lazy<&Path> =
+    Lazy::new(|| Path::new("/etc/apparmor.d/bwrap-userns-restrict"));
 
 fn enabled() -> Result<bool> {
     let current_exe = current_exe()?;
@@ -114,7 +134,56 @@ fn enabled() -> Result<bool> {
         bail!("`config.toml` has unexpected contents");
     };
     let path = util::which(linker)?;
-    Ok(current_exe == path)
+    if current_exe != path {
+        return Ok(false);
+    }
+    if noble_numbat_or_later()? && !BWRAP_APPARMOR_PROFILE_PATH.try_exists()? {
+        bail!("`{}` does not exist", BWRAP_APPARMOR_PROFILE_PATH.display());
+    }
+    Ok(true)
+}
+
+static OS_RELEASE_PATH: Lazy<&Path> = Lazy::new(|| Path::new("/etc/os-release"));
+
+static VERSION_ID_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"([0-9]+)\.[0-9]+").unwrap());
+
+fn noble_numbat_or_later() -> Result<bool> {
+    if !OS_RELEASE_PATH.try_exists()? {
+        return Ok(false);
+    }
+    let map = parse_env_file(&OS_RELEASE_PATH)?;
+    let Some(version_id) = map.get("VERSION_ID") else {
+        bail!(
+            "`{}` does not contain `VERSION_ID`",
+            OS_RELEASE_PATH.display()
+        );
+    };
+    let Some(captures) = VERSION_ID_RE.captures(version_id) else {
+        bail!("failed to parse version id: {:?}", version_id);
+    };
+    assert_eq!(2, captures.len());
+    let version_major = u64::from_str(captures.get(1).unwrap().as_str())?;
+    Ok(version_major >= 24)
+}
+
+static ENV_LINE_RE: Lazy<Regex> = Lazy::new(|| Regex::new("([A-Za-z0-9_]+)=(.*)").unwrap());
+
+fn parse_env_file(path: &Path) -> Result<BTreeMap<String, String>> {
+    let mut map = BTreeMap::new();
+    let contents = read_to_string(path)?;
+    for line in contents.lines() {
+        let Some(captures) = ENV_LINE_RE.captures(line) else {
+            bail!("failed to parse line: {:?}", line);
+        };
+        assert_eq!(3, captures.len());
+        let key = captures.get(1).unwrap().as_str();
+        let mut value = captures.get(2).unwrap().as_str();
+        if value.len() >= 2 && value.starts_with('"') && value.ends_with('"') {
+            value = &value[1..value.len() - 1];
+        }
+        map.insert(key.to_owned(), value.to_owned());
+    }
+    Ok(map)
 }
 
 #[cfg(test)]
