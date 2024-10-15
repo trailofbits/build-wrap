@@ -66,34 +66,31 @@ fn help() {
     println!(
         "{} {}
 
-A linker replacement to help protect against malicious build scripts",
+A linker replacement to help protect against malicious build scripts
+",
         env!("CARGO_PKG_NAME"),
         env!("CARGO_PKG_VERSION"),
     );
     let result = enabled();
     if matches!(result, Ok(true)) {
-        println!(
-            "
-build-wrap is {}",
-            *ENABLED
-        );
+        let enabled = *ENABLED;
+        println!("build-wrap is {enabled}");
         return;
     }
+    let disabled = *DISABLED;
     let msg = result
         .err()
         .map(|error| format!(": {error}"))
         .unwrap_or_default();
     println!(
-        r#"
-build-wrap is {}{msg}
+        r#"build-wrap is {disabled}{msg}
 
 To enable build-wrap, create a `.cargo/config.toml` file in your home directory with the following contents:
 
 ```
 [target.'cfg(all())']
 linker = "build-wrap"
-```"#,
-        *DISABLED
+```"#
     );
 }
 
