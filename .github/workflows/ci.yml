@@ -53,7 +53,7 @@ jobs:
     strategy:
       fail-fast: ${{ github.event_name == 'merge_group' }}
       matrix:
-        environment: [ubuntu-latest, macos-latest]
+        environment: [ubuntu-latest, ubuntu-24.04, macos-latest]
 
     runs-on: ${{ matrix.environment }}
 
@@ -81,10 +81,10 @@ jobs:
         run: sudo apt install bubblewrap
 
       - name: Install Bubblewrap profile on Ubuntu
-        if: ${{ matrix.environment == 'ubuntu-latest' }}
+        if: ${{ runner.os == 'Linux' }}
         run: |
           sudo apt install apparmor-profiles
-          sudo cp /usr/share/apparmor/extra-profiles/bwrap-userns-restrict /etc/apparmor.d
+          sudo cp /usr/share/apparmor/extra-profiles/bwrap-userns-restrict /etc/apparmor.d || true
           sudo systemctl reload apparmor
 
       # smoelius: Go is needed for the `aws-lc-fips-sys` third-party test.
