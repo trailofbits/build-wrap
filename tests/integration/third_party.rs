@@ -1,14 +1,18 @@
 use crate::util::{test_case, TestCase, ToUtf8};
+use anyhow::{ensure, Result};
+use assert_cmd::Command;
 use std::{
     env::var_os,
     ffi::OsStr,
     fs::{read_dir, read_to_string, DirEntry},
     io::Write,
-    path::Path,
+    path::{Path, PathBuf},
 };
 
 #[test]
 fn third_party() {
+    warn_if_go_build_exists();
+
     let mut entries = read_dir("tests/third_party")
         .unwrap()
         .collect::<Result<Vec<_>, _>>()
@@ -60,4 +64,27 @@ fn parse_version_file(path: &Path) -> String {
         .join("")
         .trim()
         .to_owned()
+}
+
+fn warn_if_go_build_exists() {
+    let Ok(go_build_path) = go_build_path() else {
+        return;
+    };
+
+    if go_build_path.try_exists().unwrap_or(false) {
+        #[allow(clippy::explicit_write)]
+        writeln!(
+            std::io::stderr(),
+            "`go-build` exists at `{}`; some third-party tests may fail!",
+            go_build_path.display()
+        )
+        .unwrap();
+    }
+}
+
+fn go_build_path() -> Result<PathBuf> {
+    let output = Command::new("go").args(["env", "GOCACHE"]).output()?;
+    ensure!(output.status.success());
+    let stdout = std::str::from_utf8(&output.stdout)?;
+    Ok(PathBuf::from(stdout.trim_end()))
 }
