@@ -31,7 +31,7 @@ const DEFAULT_PROFILE: &str = r#"(version 1)
 /// `command` succeeded.
 ///
 /// Called by [`unpack_and_exec`]. Since this file is included in the wrapper build script's
-/// src/main.rs file, `exec` should appear here, alongside [`unpack_and_exec`].
+/// src/main.rs file, `exec_forwarding_output` should appear here, alongside [`unpack_and_exec`].
 ///
 /// # Errors
 ///
