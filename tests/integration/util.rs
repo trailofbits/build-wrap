@@ -17,7 +17,6 @@ use std::{
     path::Path,
     process::Command,
 };
-use tempfile::{tempdir_in, TempDir};
 
 #[path = "../../src/util/mod.rs"]
 mod main_util;
@@ -55,7 +54,7 @@ pub fn build_with_default_linker() -> Command {
 pub fn temp_package<'a, 'b>(
     build_script_path: Option<impl AsRef<Path>>,
     dependencies: impl IntoIterator<Item = (&'a str, &'b str)>,
-) -> Result<TempDir> {
+) -> Result<tempfile::TempDir> {
     let tempdir = tempdir()?;
 
     write(tempdir.path().join("Cargo.toml"), CARGO_TOML)?;
@@ -98,8 +97,8 @@ static METADATA: Lazy<Metadata> = Lazy::new(|| MetadataCommand::new().no_deps().
 ///
 /// Useful if you want to verify that writing outside of the temporary directory is forbidden, but
 /// `/tmp` is writeable, for example.
-pub fn tempdir() -> Result<TempDir> {
-    tempdir_in(&METADATA.target_directory).map_err(Into::into)
+pub fn tempdir() -> Result<tempfile::TempDir> {
+    tempfile::tempdir_in(&METADATA.target_directory).map_err(Into::into)
 }
 
 #[derive(Debug)]

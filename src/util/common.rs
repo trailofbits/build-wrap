@@ -11,7 +11,6 @@ use std::{
     process::{Command, Output, Stdio},
     str::Utf8Error,
 };
-use tempfile::NamedTempFile;
 
 #[allow(dead_code)]
 const DEFAULT_PROFILE: &str = r#"(version 1)
@@ -65,7 +64,8 @@ pub fn exec_forwarding_output(mut command: Command, failure_is_error: bool) -> R
 /// itself.
 #[allow(dead_code)]
 fn unpack_and_exec(bytes: &[u8]) -> Result<()> {
-    let (mut file, temp_path) = NamedTempFile::new().map(NamedTempFile::into_parts)?;
+    let (mut file, temp_path) =
+        tempfile::NamedTempFile::new().map(tempfile::NamedTempFile::into_parts)?;
 
     file.write_all(bytes)?;
 
@@ -239,7 +239,7 @@ fn expand(mut cmd: &str, build_script_path: Option<&Path>) -> Result<String> {
 
 #[cfg(target_os = "macos")]
 static BUILD_WRAP_PROFILE_PATH: Lazy<String> = Lazy::new(|| {
-    let tempfile = NamedTempFile::new().unwrap();
+    let tempfile = tempfile::NamedTempFile::new().unwrap();
     let (mut file, temp_path) = tempfile.into_parts();
     let profile = var("BUILD_WRAP_PROFILE").unwrap_or(DEFAULT_PROFILE.to_owned());
     let expanded_profile = expand(&profile, None).unwrap();
