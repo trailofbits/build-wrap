@@ -1,5 +1,5 @@
 use crate::util;
-use std::{env::temp_dir, path::Path, process::Command};
+use std::{path::Path, process::Command};
 
 const DIR: &str = "fixtures/cargo_config";
 
@@ -16,8 +16,19 @@ fn cargo_config() {
     // smoelius: When `build-wrap` builds the wrapper package, it expects the target directory to be
     // `target`. So building the wrapper package in `fixtures/cargo_config` would fail because it
     // contains a `.cargo/config.toml` that sets the target directory to `target-custom`.
+
+    // smoelius: The build script in `fixtures/cargo_config` prints the path of the current
+    // executable, i.e., the wrapped, original build script. Previously, this was unpacked into
+    // `std::env::temp_dir()`. However, `build-wrap` now renames the original build script so that
+    // it is a sibling of the wrapper build script. Hence, when this test is run, the current
+    // executable should be in `target-custom` alongside the wrapper build script.
     let command = util::build_with_build_wrap();
-    test_build(command, &temp_dir());
+    test_build(
+        command,
+        &Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join(DIR)
+            .join("target-custom/debug"),
+    );
 }
 
 fn test_build(mut command: Command, expected_dir: &Path) {
