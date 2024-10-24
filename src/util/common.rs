@@ -4,9 +4,9 @@ use anyhow::{anyhow, bail, ensure, Context, Result};
 use once_cell::sync::Lazy;
 use std::{
     env,
-    fs::{canonicalize, set_permissions, Permissions},
+    fs::canonicalize,
     io::Write,
-    os::unix::{ffi::OsStrExt, fs::PermissionsExt},
+    os::unix::ffi::OsStrExt,
     path::Path,
     process::{Command, Output, Stdio},
     str::Utf8Error,
@@ -29,8 +29,8 @@ const DEFAULT_PROFILE: &str = r#"(version 1)
 /// Executes `command`, forwards its output to stdout and stderr, and optionally checks whether
 /// `command` succeeded.
 ///
-/// Called by [`unpack_and_exec`]. Since this file is included in the wrapper build script's
-/// src/main.rs file, `exec_forwarding_output` should appear here, alongside [`unpack_and_exec`].
+/// Called by [`exec_sibling`]. Since this file is included in the wrapper build script's
+/// src/main.rs file, `exec_forwarding_output` should appear here, alongside [`exec_sibling`].
 ///
 /// # Errors
 ///
@@ -63,15 +63,16 @@ pub fn exec_forwarding_output(mut command: Command, failure_is_error: bool) -> R
 /// Essentially the body of the wrapper build script's `main` function. Not called by `build-wrap`
 /// itself.
 #[allow(dead_code)]
-fn unpack_and_exec(bytes: &[u8]) -> Result<()> {
-    let (mut file, temp_path) =
-        tempfile::NamedTempFile::new().map(tempfile::NamedTempFile::into_parts)?;
+fn exec_sibling(sibling_path_as_str: &str) -> Result<()> {
+    let current_exe = env::current_exe()?;
 
-    file.write_all(bytes)?;
+    let parent = current_exe
+        .parent()
+        .ok_or_else(|| anyhow!("failed to get `current_exe` parent"))?;
 
-    drop(file);
+    let sibling_path = Path::new(sibling_path_as_str);
 
-    set_permissions(&temp_path, Permissions::from_mode(0o755))?;
+    assert!(sibling_path.starts_with(parent));
 
     // smoelius: The `BUILD_WRAP_CMD` used is the one set when set when the wrapper build script is
     // compiled, not when it is run. So if the wrapped build script prints the following and the
@@ -81,7 +82,7 @@ fn unpack_and_exec(bytes: &[u8]) -> Result<()> {
     // cargo:rerun-if-env-changed=BUILD_WRAP_CMD
     // ```
     // They will cause the wrapped build script to be rerun, however.
-    let expanded_args = split_and_expand(&temp_path)?;
+    let expanded_args = split_and_expand(sibling_path)?;
 
     let allow_enabled = enabled("BUILD_WRAP_ALLOW");
 
@@ -93,11 +94,9 @@ fn unpack_and_exec(bytes: &[u8]) -> Result<()> {
     // `BUILD_WRAP_ALLOW` is enabled.
     if !output.status.success() {
         debug_assert!(allow_enabled);
-        let command = Command::new(&temp_path);
+        let command = Command::new(sibling_path);
         let _: Output = exec_forwarding_output(command, true)?;
     }
-
-    drop(temp_path);
 
     Ok(())
 }
