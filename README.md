@@ -100,7 +100,7 @@ Note that we say "treats as set" because these are considered only when [`BUILD_
 
 ## How `BUILD_WRAP_CMD` is expanded
 
-- `{}` is replaced with the path of a copy of the original build script.
+- `{}` is replaced with the path of a renamed copy of the original build script.
 - `{VAR}` is replaced with the value of environment variable `VAR`.
 - `{{` is replaced with `{`.
 - `}}` is replaced with `}`.
@@ -113,14 +113,15 @@ When invoked, `build-wrap` does the following:
 
 1. Link normally using `BUILD_WRAP_LD`.
 2. Parse the arguments to determine whether the output file is a build script.
-3. If so, replace the build script `B` with its "wrapped" version `B'`, described next.
+3. If not, stop; otherwise, proceed.
+4. Let `B` be the build script's original name.
+5. Rename the build script to a fresh, unused name `B'`.
+6. At `B`, create a "wrapped" version of the build script whose behavior is described next.
 
-Given a build script `B`, its "wrapped" version `B'` contains a copy of `B` and does the following when invoked:
+The "wrapped" version of the build script does the following when invoked:
 
-1. Create a temporary file with the contents of `B`. (Recall: `B'` contains a copy of `B`).
-2. Make the temporary file executable.
-3. Expand `BUILD_WRAP_CMD` in the [manner described above].
-4. Execute the expanded command.
+1. Expand `BUILD_WRAP_CMD` in the [manner described above], with `{}` expanding to `B'`.
+2. Execute the expanded command.
 
 ## Goals
 
