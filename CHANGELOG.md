@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.0
+
+- FEATURE: Rename the original build script and refer to it from the "wrapper" built script, rather than include the original build script as a byte array ([86](https://github.com/trailofbits/build-wrap/pull/86) and [89](https://github.com/trailofbits/build-wrap/pull/89))
+
 ## 0.3.2
 
 - Update documentation ([41a6361](https://github.com/trailofbits/build-wrap/commit/41a6361466840db58c3853992ff0826d230040bc). [56aded5](https://github.com/trailofbits/build-wrap/commit/56aded59a8630bacfe8298bee759b459948fa374), and [f08ed71](https://github.com/trailofbits/build-wrap/commit/f08ed71f1f5c8857a4733196a2a0a692d7091ceb))
