@@ -19,6 +19,19 @@ fn cargo_config() {
     // executable should be in `target-custom` alongside the wrapper build script.
     let command = util::build_with_build_wrap();
     test_build(command);
+
+    // smoelius: Building the wrapper package should similarly succeed if `CARGO_TARGET_DIR` is set.
+    // Note that the `fixtures/cargo_config` directory must be cleaned for it to be rebuilt.
+    let status = Command::new("cargo")
+        .arg("clean")
+        .current_dir(DIR)
+        .status()
+        .unwrap();
+    assert!(status.success());
+
+    let mut command = util::build_with_build_wrap();
+    command.env("CARGO_TARGET_DIR", "target-custom");
+    test_build(command);
 }
 
 fn test_build(mut command: Command) {
