@@ -72,7 +72,7 @@ pub fn temp_package<'a, 'b>(
             .open(tempdir.path().join("Cargo.toml"))?;
         writeln!(file, "\n[dependencies]")?;
         for (name, version) in iter {
-            writeln!(file, r#"{name} = "{version}""#)?;
+            writeln!(file, r#"{name} = "={version}""#)?;
         }
     }
 
