@@ -272,7 +272,7 @@ fn var(key: &str) -> Result<String, env::VarError> {
 }
 
 fn enabled(name: &str) -> bool {
-    env::var(name).map_or(false, |value| value != "0")
+    env::var(name).is_ok_and(|value| value != "0")
 }
 
 #[cfg(test)]
