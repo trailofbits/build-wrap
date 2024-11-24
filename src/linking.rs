@@ -69,6 +69,8 @@ fn wrap(linker: &str, build_script_path: &Path) -> Result<()> {
         "--config",
         &format!("target.'cfg(all())'.linker = '{linker}'"),
     ]);
+    // smoelius: Unset `CARGO_TARGET_DIR` environment variable.
+    command.env_remove("CARGO_TARGET_DIR");
     // smoelius: `cd` into `wrapper_package`'s directory to avoid any `.cargo/config.toml` that may
     // be in ancestors of the current directory.
     command.current_dir(&wrapper_package);
