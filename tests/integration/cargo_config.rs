@@ -6,12 +6,7 @@ const DIR: &str = "fixtures/cargo_config";
 #[test]
 fn cargo_config() {
     let command = util::build_with_default_linker();
-    test_build(
-        command,
-        &Path::new(env!("CARGO_MANIFEST_DIR"))
-            .join(DIR)
-            .join("target-custom/debug"),
-    );
+    test_build(command);
 
     // smoelius: When `build-wrap` builds the wrapper package, it expects the target directory to be
     // `target`. So building the wrapper package in `fixtures/cargo_config` would fail because it
@@ -23,18 +18,16 @@ fn cargo_config() {
     // it is a sibling of the wrapper build script. Hence, when this test is run, the current
     // executable should be in `target-custom` alongside the wrapper build script.
     let command = util::build_with_build_wrap();
-    test_build(
-        command,
-        &Path::new(env!("CARGO_MANIFEST_DIR"))
-            .join(DIR)
-            .join("target-custom/debug"),
-    );
+    test_build(command);
 }
 
-fn test_build(mut command: Command, expected_dir: &Path) {
+fn test_build(mut command: Command) {
     command.current_dir(DIR);
     let output = util::exec_forwarding_output(command, true).unwrap();
     let stderr = std::str::from_utf8(&output.stderr).unwrap();
+    let expected_dir = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join(DIR)
+        .join("target-custom/debug");
     assert!(stderr.lines().any(|line| line.starts_with(&format!(
         "warning: cargo_config@0.1.0: {}/",
         trim_trailing_slashes(&expected_dir.to_string_lossy())
