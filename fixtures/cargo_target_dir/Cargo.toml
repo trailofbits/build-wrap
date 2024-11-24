@@ -1,5 +1,5 @@
 [package]
-name = "cargo_config"
+name = "cargo_target_dir"
 version = "0.1.0"
 edition = "2021"
 publish = false
