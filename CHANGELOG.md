@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.1
+
+- Unset `CARGO_TARGET_DIR` when building the wrapper package ([aa4a646](https://github.com/trailofbits/build-wrap/commit/aa4a646d8eee4e209140f12fe47554f5c3e913a8))
+
 ## 0.4.0
 
 - FEATURE: Rename the original build script and refer to it from the "wrapper" built script, rather than include the original build script as a byte array ([86](https://github.com/trailofbits/build-wrap/pull/86) and [89](https://github.com/trailofbits/build-wrap/pull/89))
