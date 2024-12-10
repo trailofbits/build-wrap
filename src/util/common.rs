@@ -137,7 +137,7 @@ fn split_escaped(mut s: &str) -> Result<Vec<String>> {
         debug_assert!(v
             .iter()
             .position(String::is_empty)
-            .map_or(true, |i| i == v.len() - 1));
+            .is_none_or(|i| i == v.len() - 1));
 
         let c = s.as_bytes()[i];
 
