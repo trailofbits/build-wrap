@@ -12,7 +12,7 @@ fn allow() {
         command.current_dir(&temp_package);
 
         let output = util::exec_forwarding_output(command, false).unwrap();
-        // smoelius: The command should succeed precisely when `BUILD_SCRIPT_ALLOW` is enabled.
+        // smoelius: The command should succeed precisely when `BUILD_WRAP_ALLOW` is enabled.
         assert_eq!(allow, output.status.success());
         let stderr = std::str::from_utf8(&output.stderr).unwrap();
         assert!(stderr.contains("command failed"));
