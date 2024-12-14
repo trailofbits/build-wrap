@@ -44,6 +44,7 @@ publish = false
 anyhow = "1.0"
 once_cell = "1.19"
 tempfile = "3.10"
+xdg = "2.5"
 "#;
 
 /// A wrapper build script's src/main.rs consists of the following:

@@ -42,6 +42,8 @@ Note that the below environment variables are read **when a build script is link
   BUILD_WRAP_ALLOW=1 cargo build -vv
   ```
 
+  If a package must always be built with this strategy, put the package's name in [`$HOME/.config/build-wrap/allow.txt`] (see below).
+
 - `BUILD_WRAP_CMD`: Command used to execute a build script. Linux default:
 
   - With comments:
@@ -90,6 +92,17 @@ Note that the below environment variables are read **when a build script is link
   (deny network*)                                  ;; Deny network access
   ```
 
+## `$HOME/.config/build-wrap/allow.txt`
+
+If a file at `$HOME/.config/build-wrap/allow.txt` exists, `build-wrap` treats each line as the name of a package. Such packages are built as though `BUILD_WRAP_ALLOW` were set to `1`.
+
+For example, [`svm-rs-builds`] downloads information about Solc releases when it is built. So if you build [`svm-rs`] frequently, you might do the following:
+
+```sh
+mkdir -p "$HOME/.config/build-wrap"
+echo 'svm-rs-builds' > "$HOME/.config/build-wrap/allow.txt"
+```
+
 ## Environment variables that `build-wrap` treats as set
 
 Note that we say "treats as set" because these are considered only when [`BUILD_WRAP_CMD` is expanded].
@@ -134,9 +147,12 @@ The "wrapped" version of the build script does the following when invoked:
 [How `build-wrap` works]: #how-build-wrap-works
 [Ubuntu Community Wiki]: https://help.ubuntu.com/community/AppArmor
 [Ubuntu Server]: https://documentation.ubuntu.com/server/how-to/security/apparmor/
+[`$HOME/.config/build-wrap/allow.txt`]: #homeconfigbuild-wrapallowtxt
 [`BUILD_WRAP_CMD` is expanded]: #how-build_wrap_cmd-is-expanded
 [`cc-rs`]: https://github.com/rust-lang/cc-rs
 [`sandbox-exec`]: https://keith.github.io/xcode-man-pages/sandbox-exec.1.html
+[`svm-rs-builds`]: https://github.com/alloy-rs/svm-rs/tree/master/crates/svm-builds
+[`svm-rs`]: https://github.com/alloy-rs/svm-rs
 [affect Bubblewrap]: https://github.com/containers/bubblewrap/issues/505#issuecomment-2093203129
 [as it would `BUILD_WRAP_CMD`]: #how-build_wrap_cmd-is-expanded
 [changed with version 24.04]: https://ubuntu.com/blog/ubuntu-23-10-restricted-unprivileged-user-namespaces
