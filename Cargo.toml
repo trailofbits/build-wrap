@@ -1,6 +1,6 @@
 [package]
 name = "build-wrap"
-version = "0.4.1"
+version = "0.5.0"
 authors = ["Samuel Moelius <sam@moeli.us>"]
 description = "Help protect against malicious build scripts"
 edition = "2021"
