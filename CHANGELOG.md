@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.0
+
+- FEATURE: Support `$HOME/.config/build-wrap/allow.txt`. A package whose name appears in this file will be built as though `BUILD_WRAP_ALLOW` were set to `1`. ([104](https://github.com/trailofbits/build-wrap/pull/104))
+
 ## 0.4.1
 
 - Unset `CARGO_TARGET_DIR` when building the wrapper package ([aa4a646](https://github.com/trailofbits/build-wrap/commit/aa4a646d8eee4e209140f12fe47554f5c3e913a8))
