@@ -20,6 +20,11 @@ DIR="$PWD"
 
 find . -name build.rs |
 while read X; do
+    # smoelius: A previous iteration of this loop could have caused the file to go away.
+    if [[ ! -f "$X" ]]; then
+        continue
+    fi
+
     Y="$(dirname "$X")"
 
     pushd "$Y"
