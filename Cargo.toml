@@ -36,3 +36,10 @@ libraries = [
     { git = "https://github.com/trailofbits/dylint", pattern = "examples/restriction/inconsistent_qualification" },
     { git = "https://github.com/trailofbits/dylint", pattern = "examples/restriction/misleading_variable_name" },
 ]
+
+[workspace.metadata.unmaintained]
+ignore = [
+    # https://github.com/alacritty/vte/pull/122#issuecomment-2579278540
+    "utf8parse",
+    "wit-bindgen-rt",
+]
