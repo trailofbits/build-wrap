@@ -1,7 +1,6 @@
 //! This file is included verbatim in the wrapper build script's src/main.rs file.
 
 use anyhow::{anyhow, bail, ensure, Context, Result};
-use once_cell::sync::Lazy;
 use std::{
     env,
     fs::{canonicalize, read_to_string},
@@ -10,6 +9,7 @@ use std::{
     path::Path,
     process::{Command, Output, Stdio},
     str::Utf8Error,
+    sync::LazyLock,
 };
 
 #[allow(dead_code)]
@@ -237,7 +237,7 @@ fn expand(mut cmd: &str, build_script_path: Option<&Path>) -> Result<String> {
 }
 
 #[cfg(target_os = "macos")]
-static BUILD_WRAP_PROFILE_PATH: Lazy<String> = Lazy::new(|| {
+static BUILD_WRAP_PROFILE_PATH: LazyLock<String> = LazyLock::new(|| {
     let tempfile = tempfile::NamedTempFile::new().unwrap();
     let (mut file, temp_path) = tempfile.into_parts();
     let profile = var("BUILD_WRAP_PROFILE").unwrap_or(DEFAULT_PROFILE.to_owned());
@@ -247,7 +247,7 @@ static BUILD_WRAP_PROFILE_PATH: Lazy<String> = Lazy::new(|| {
     path.to_utf8().map(ToOwned::to_owned).unwrap()
 });
 
-static PRIVATE_TMPDIR: Lazy<Option<String>> = Lazy::new(|| {
+static PRIVATE_TMPDIR: LazyLock<Option<String>> = LazyLock::new(|| {
     var("TMPDIR").ok().and_then(|value| {
         let path = canonicalize(value).ok()?;
         if path.starts_with("/private") {
@@ -275,7 +275,7 @@ fn enabled(name: &str) -> bool {
     env::var(name).is_ok_and(|value| value != "0")
 }
 
-static ALLOWED_PACKAGE_NAMES: Lazy<Vec<String>> = Lazy::new(|| {
+static ALLOWED_PACKAGE_NAMES: LazyLock<Vec<String>> = LazyLock::new(|| {
     let base_directories = xdg::BaseDirectories::new().unwrap();
     let Some(allowed) = base_directories.find_config_file("build-wrap/allow.txt") else {
         return Vec::new();

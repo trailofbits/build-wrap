@@ -1,5 +1,4 @@
 use anyhow::{bail, Context, Result};
-use once_cell::sync::Lazy;
 use regex::Regex;
 use std::{
     collections::BTreeMap,
@@ -8,6 +7,7 @@ use std::{
     io::{stdout, IsTerminal},
     path::Path,
     str::FromStr,
+    sync::LazyLock,
 };
 
 mod linking;
@@ -50,7 +50,7 @@ fn run(args: &[String]) -> Result<()> {
     linking::link(args)
 }
 
-static ENABLED: Lazy<&str> = Lazy::new(|| {
+static ENABLED: LazyLock<&str> = LazyLock::new(|| {
     if stdout().is_terminal() {
         "\x1b[1;32mENABLED\x1b[0m"
     } else {
@@ -58,7 +58,7 @@ static ENABLED: Lazy<&str> = Lazy::new(|| {
     }
 });
 
-static DISABLED: Lazy<&str> = Lazy::new(|| {
+static DISABLED: LazyLock<&str> = LazyLock::new(|| {
     if stdout().is_terminal() {
         "\x1b[1;31mDISABLED\x1b[0m"
     } else {
@@ -111,8 +111,8 @@ sudo systemctl reload apparmor
     );
 }
 
-static BWRAP_APPARMOR_PROFILE_PATH: Lazy<&Path> =
-    Lazy::new(|| Path::new("/etc/apparmor.d/bwrap-userns-restrict"));
+static BWRAP_APPARMOR_PROFILE_PATH: LazyLock<&Path> =
+    LazyLock::new(|| Path::new("/etc/apparmor.d/bwrap-userns-restrict"));
 
 fn enabled() -> Result<bool> {
     let current_exe = current_exe()?;
@@ -143,9 +143,9 @@ fn enabled() -> Result<bool> {
     Ok(true)
 }
 
-static OS_RELEASE_PATH: Lazy<&Path> = Lazy::new(|| Path::new("/etc/os-release"));
+static OS_RELEASE_PATH: LazyLock<&Path> = LazyLock::new(|| Path::new("/etc/os-release"));
 
-static VERSION_ID_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"([0-9]+)\.[0-9]+").unwrap());
+static VERSION_ID_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"([0-9]+)\.[0-9]+").unwrap());
 
 fn noble_numbat_or_later() -> Result<bool> {
     if !OS_RELEASE_PATH.try_exists()? {
@@ -166,7 +166,7 @@ fn noble_numbat_or_later() -> Result<bool> {
     Ok(version_major >= 24)
 }
 
-static ENV_LINE_RE: Lazy<Regex> = Lazy::new(|| Regex::new("([A-Za-z0-9_]+)=(.*)").unwrap());
+static ENV_LINE_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new("([A-Za-z0-9_]+)=(.*)").unwrap());
 
 fn parse_env_file(path: &Path) -> Result<BTreeMap<String, String>> {
     let mut map = BTreeMap::new();
