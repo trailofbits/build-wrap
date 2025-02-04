@@ -8,7 +8,6 @@
 
 use anyhow::Result;
 use cargo_metadata::{Metadata, MetadataCommand};
-use once_cell::sync::Lazy;
 use snapbox::{assert_data_eq, Data};
 use std::{
     env,
@@ -16,6 +15,7 @@ use std::{
     io::Write,
     path::Path,
     process::Command,
+    sync::LazyLock,
 };
 
 #[path = "../../src/util/mod.rs"]
@@ -91,7 +91,8 @@ libc = { version = "0.2", optional = true }
 rustc_version = { version = "0.4", optional = true }
 "#;
 
-static METADATA: Lazy<Metadata> = Lazy::new(|| MetadataCommand::new().no_deps().exec().unwrap());
+static METADATA: LazyLock<Metadata> =
+    LazyLock::new(|| MetadataCommand::new().no_deps().exec().unwrap());
 
 /// Creates a temporary directory in `build-wrap`'s target directory.
 ///

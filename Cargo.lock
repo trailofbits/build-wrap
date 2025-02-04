@@ -108,7 +108,6 @@ dependencies = [
  "cargo_metadata",
  "ctor",
  "home",
- "once_cell",
  "regex",
  "snapbox",
  "tempfile",
