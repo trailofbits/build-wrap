@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.1
+
+- Eliminate reliance on `once_cell` ([115](https://github.com/trailofbits/build-wrap/pull/115))
+
 ## 0.5.0
 
 - FEATURE: Support `$HOME/.config/build-wrap/allow.txt`. A package whose name appears in this file will be built as though `BUILD_WRAP_ALLOW` were set to `1`. ([104](https://github.com/trailofbits/build-wrap/pull/104))
