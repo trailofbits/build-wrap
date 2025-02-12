@@ -53,7 +53,7 @@ jobs:
     strategy:
       fail-fast: ${{ github.event_name == 'merge_group' }}
       matrix:
-        environment: [ubuntu-latest, macos-latest]
+        environment: [ubuntu-latest, macos-15]
 
     runs-on: ${{ matrix.environment }}
 
@@ -89,7 +89,7 @@ jobs:
 
       # smoelius: Go is needed for the `aws-lc-fips-sys` third-party test.
       - name: Install Go on macOS
-        if: ${{ matrix.environment == 'macos-latest' }}
+        if: ${{ runner.os == 'macOS' }}
         run: brew install go
 
       - name: Build
