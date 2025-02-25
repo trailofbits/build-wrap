@@ -2,6 +2,7 @@
   thread 'reqwest-internal-sync-runtime' panicked at [..]:
   Attempted to create a NULL object.
   note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
   thread 'main' panicked at [..]:
   event loop thread panicked
 ...
