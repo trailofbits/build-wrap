@@ -71,6 +71,7 @@ jobs:
 
       - name: Install tools
         run: |
+          rustup update
           rustup install nightly
           rustup +nightly component add clippy
           cargo install cargo-dylint dylint-link || true
