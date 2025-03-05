@@ -134,8 +134,8 @@ pub fn test_case(test_case: &TestCase, stderr_path: &Path) {
     assert_eq!(
         expected_stderr.is_empty(),
         output.status.success(),
-        "{test_case:?} failed in {:?}",
-        temp_package.into_path()
+        "{test_case:?} failed in `{}`",
+        temp_package.into_path().display()
     );
 
     if expected_stderr.is_empty() {
