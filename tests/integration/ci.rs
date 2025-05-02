@@ -1,19 +1,24 @@
 use crate::util;
 use assert_cmd::Command;
+use cargo_metadata::MetadataCommand;
 use regex::Regex;
 use std::{fs::read_to_string, path::Path};
 
 #[test]
 fn clippy() {
+    // smoelius: Using the actual target directory causes it to contain multiple `sandboxer`
+    // executables, which confuses scripts/sandboxer.sh. So use a subdirectory of the target
+    // directory instead.
+    let metadata = MetadataCommand::new().no_deps().exec().unwrap();
+
     Command::new("cargo")
-        // smoelius: Remove `CARGO` environment variable to work around:
-        // https://github.com/rust-lang/rust/pull/131729
-        .env_remove("CARGO")
         .args([
             "+nightly",
             "clippy",
             "--all-features",
             "--all-targets",
+            "--target-dir",
+            metadata.target_directory.join("clippy").as_str(),
             "--",
             "--deny=warnings",
         ])

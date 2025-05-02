@@ -6,14 +6,15 @@
 // smoelius: Use this module with `pub` to avoid "unused ..." warnings.
 // See: https://users.rust-lang.org/t/invalid-dead-code-warning-for-submodule-in-integration-test/80259/2
 
-use anyhow::Result;
+use anyhow::{Context, Result};
 use cargo_metadata::{Metadata, MetadataCommand};
 use snapbox::assert_data_eq;
 use std::{
     env,
+    ffi::OsString,
     fs::{copy, create_dir, write, OpenOptions},
     io::Write,
-    path::Path,
+    path::{Path, PathBuf},
     process::Command,
     sync::LazyLock,
 };
@@ -108,7 +109,7 @@ pub enum TestCase<'a> {
     ThirdParty(&'a str, &'a str),
 }
 
-pub fn test_case(_build_wrap_cmd: Option<&str>, test_case: &TestCase, stderr_expected: &str) {
+pub fn test_case(build_wrap_cmd: Option<&str>, test_case: &TestCase, stderr_expected: &str) {
     let temp_package = match *test_case {
         TestCase::BuildScript(path) => temp_package(Some(path), []),
         TestCase::ThirdParty(name, version) => temp_package(None::<&Path>, [(name, version)]),
@@ -118,6 +119,10 @@ pub fn test_case(_build_wrap_cmd: Option<&str>, test_case: &TestCase, stderr_exp
     let mut command = build_with_build_wrap();
     // smoelius: `--all-features` to enable optional build dependencies.
     command.arg("--all-features");
+    if let Some(build_wrap_cmd) = build_wrap_cmd {
+        prepend_scripts_to_path(&mut command).unwrap();
+        command.env("BUILD_WRAP_CMD", build_wrap_cmd);
+    }
     command.current_dir(&temp_package);
 
     let output = exec_forwarding_output(command, false).unwrap();
@@ -134,4 +139,26 @@ pub fn test_case(_build_wrap_cmd: Option<&str>, test_case: &TestCase, stderr_exp
 
     let stderr_actual = std::str::from_utf8(&output.stderr).unwrap();
     assert_data_eq!(stderr_actual, stderr_expected);
+}
+
+// smoelius: `prepend_scripts_to_path` allows `BUILD_WRAP_CMD`s to refer to files in the scripts
+// directory.
+fn prepend_scripts_to_path(command: &mut Command) -> Result<()> {
+    let scripts = Path::new(env!("CARGO_MANIFEST_DIR")).join("scripts");
+    prepend_to_path(command, scripts)?;
+    Ok(())
+}
+
+pub fn prepend_to_path(command: &mut Command, path: PathBuf) -> Result<()> {
+    let paths = prepend_path(path)?;
+    command.env("PATH", paths);
+    Ok(())
+}
+
+pub fn prepend_path(path: PathBuf) -> Result<OsString> {
+    let paths = env::var_os("PATH").with_context(|| "`PATH` is unset")?;
+    let paths_split = env::split_paths(&paths);
+    let paths_chained = std::iter::once(path).chain(paths_split);
+    let paths_joined = env::join_paths(paths_chained)?;
+    Ok(paths_joined)
 }
