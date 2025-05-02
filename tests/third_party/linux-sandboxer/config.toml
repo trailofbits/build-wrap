@@ -1,0 +1,3 @@
+target_os = "linux"
+
+build_wrap_cmd = "sandboxer.sh --fs-ro=/ --fs-rw=/dev:{OUT_DIR}:/tmp --tcp-connect=0 -- {}"

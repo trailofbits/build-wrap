@@ -1,12 +1,9 @@
 use crate::util;
-use anyhow::{Context, Result};
-use assert_cmd::Command;
+use assert_cmd::cargo::CommandCargoExt;
 use cargo_metadata::MetadataCommand;
 use std::{
-    env::{join_paths, split_paths, var_os},
-    ffi::OsString,
     fs::{create_dir_all, write},
-    path::PathBuf,
+    process::Command,
 };
 
 #[test]
@@ -27,7 +24,7 @@ linker = "build-wrap""#,
         if set_path {
             let metadata = MetadataCommand::new().no_deps().exec().unwrap();
             let target_debug = metadata.target_directory.join("debug").into_std_path_buf();
-            command.env("PATH", prepend_path(target_debug).unwrap());
+            util::prepend_to_path(&mut command, target_debug).unwrap();
         }
         exec_and_check_stdout(
             command,
@@ -37,14 +34,6 @@ linker = "build-wrap""#,
             ),
         );
     }
-}
-
-fn prepend_path(path: PathBuf) -> Result<OsString> {
-    let paths = var_os("PATH").with_context(|| "`PATH` is unset")?;
-    let paths_split = split_paths(&paths);
-    let paths_chained = std::iter::once(path).chain(paths_split);
-    let paths_joined = join_paths(paths_chained)?;
-    Ok(paths_joined)
 }
 
 fn exec_and_check_stdout(mut command: Command, prefix: &str) {
