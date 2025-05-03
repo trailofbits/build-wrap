@@ -117,7 +117,7 @@ pub fn test_case(test_case: &TestCase, stderr_path: &Path) {
             stderr_path.with_extension("macos.stderr")
         }
     }
-    let expected_stderr = read_to_string(&stderr_path).unwrap();
+    let stderr_expected = read_to_string(&stderr_path).unwrap();
 
     let temp_package = match *test_case {
         TestCase::BuildScript(path) => temp_package(Some(path), []),
@@ -132,13 +132,13 @@ pub fn test_case(test_case: &TestCase, stderr_path: &Path) {
 
     let output = exec_forwarding_output(command, false).unwrap();
     assert_eq!(
-        expected_stderr.is_empty(),
+        stderr_expected.is_empty(),
         output.status.success(),
         "{test_case:?} failed in `{}`",
         temp_package.into_path().display()
     );
 
-    if expected_stderr.is_empty() {
+    if stderr_expected.is_empty() {
         return;
     }
 
