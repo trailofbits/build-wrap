@@ -8,10 +8,10 @@
 
 use anyhow::Result;
 use cargo_metadata::{Metadata, MetadataCommand};
-use snapbox::{assert_data_eq, Data};
+use snapbox::assert_data_eq;
 use std::{
     env,
-    fs::{copy, create_dir, read_to_string, write, OpenOptions},
+    fs::{copy, create_dir, write, OpenOptions},
     io::Write,
     path::Path,
     process::Command,
@@ -108,17 +108,7 @@ pub enum TestCase<'a> {
     ThirdParty(&'a str, &'a str),
 }
 
-pub fn test_case(test_case: &TestCase, stderr_path: &Path) {
-    let mut stderr_path = stderr_path.to_path_buf();
-    if !stderr_path.exists() {
-        stderr_path = if cfg!(target_os = "linux") {
-            stderr_path.with_extension("linux.stderr")
-        } else {
-            stderr_path.with_extension("macos.stderr")
-        }
-    }
-    let stderr_expected = read_to_string(&stderr_path).unwrap();
-
+pub fn test_case(_build_wrap_cmd: Option<&str>, test_case: &TestCase, stderr_expected: &str) {
     let temp_package = match *test_case {
         TestCase::BuildScript(path) => temp_package(Some(path), []),
         TestCase::ThirdParty(name, version) => temp_package(None::<&Path>, [(name, version)]),
@@ -143,5 +133,5 @@ pub fn test_case(test_case: &TestCase, stderr_path: &Path) {
     }
 
     let stderr_actual = std::str::from_utf8(&output.stderr).unwrap();
-    assert_data_eq!(stderr_actual, Data::read_from(&stderr_path, None));
+    assert_data_eq!(stderr_actual, stderr_expected);
 }

@@ -109,6 +109,7 @@ dependencies = [
  "ctor",
  "home",
  "regex",
+ "serde",
  "snapbox",
  "tempfile",
  "toml",

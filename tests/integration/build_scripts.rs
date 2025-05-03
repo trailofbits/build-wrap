@@ -1,31 +1,12 @@
-use crate::util::{test_case, TestCase};
-use std::{
-    env::var_os,
-    ffi::OsStr,
-    fs::{read_dir, DirEntry},
-    io::Write,
+use crate::{
+    config,
+    util::{test_case, TestCase},
 };
+use std::io::Write;
 
 #[test]
 fn build_scripts() {
-    let mut entries = read_dir("tests/build_scripts")
-        .unwrap()
-        .collect::<Result<Vec<_>, _>>()
-        .unwrap();
-    entries.sort_by_key(DirEntry::path);
-    for entry in entries {
-        let path = entry.path();
-
-        if path.extension() != Some(OsStr::new("rs")) {
-            continue;
-        }
-
-        if let Some(testname) = var_os("TESTNAME") {
-            if path.file_stem() != Some(&testname) {
-                continue;
-            }
-        }
-
+    config::for_each_test_case("tests/build_scripts", |build_wrap_cmd, path, stderr| {
         #[allow(clippy::explicit_write)]
         writeln!(
             std::io::stderr(),
@@ -34,9 +15,9 @@ fn build_scripts() {
         )
         .unwrap();
 
-        test_case(
-            &TestCase::BuildScript(&path),
-            &path.with_extension("stderr"),
-        );
-    }
+        test_case(build_wrap_cmd, &TestCase::BuildScript(path), stderr);
+
+        Ok(())
+    })
+    .unwrap();
 }
