@@ -1,10 +1,11 @@
-use crate::util::{test_case, TestCase, ToUtf8};
+use crate::{
+    config,
+    util::{test_case, TestCase, ToUtf8},
+};
 use anyhow::{ensure, Result};
 use assert_cmd::Command;
 use std::{
-    env::var_os,
-    ffi::OsStr,
-    fs::{read_dir, read_to_string, DirEntry},
+    fs::read_to_string,
     io::Write,
     path::{Path, PathBuf},
 };
@@ -13,24 +14,7 @@ use std::{
 fn third_party() {
     warn_if_go_build_exists();
 
-    let mut entries = read_dir("tests/third_party")
-        .unwrap()
-        .collect::<Result<Vec<_>, _>>()
-        .unwrap();
-    entries.sort_by_key(DirEntry::path);
-    for entry in entries {
-        let path = entry.path();
-
-        if path.extension() != Some(OsStr::new("txt")) {
-            continue;
-        }
-
-        if let Some(testname) = var_os("TESTNAME") {
-            if path.file_stem() != Some(&testname) {
-                continue;
-            }
-        }
-
+    config::for_each_test_case("tests/third_party", |build_wrap_cmd, path, stderr| {
         #[allow(clippy::explicit_write)]
         writeln!(
             std::io::stderr(),
@@ -42,13 +26,17 @@ fn third_party() {
         let file_stem = path.file_stem().unwrap();
         let name = file_stem.to_utf8().unwrap();
 
-        let version = parse_version_file(&path);
+        let version = parse_version_file(path);
 
         test_case(
+            build_wrap_cmd,
             &TestCase::ThirdParty(name, &version),
-            &path.with_extension("stderr"),
+            stderr,
         );
-    }
+
+        Ok(())
+    })
+    .unwrap();
 }
 
 fn parse_version_file(path: &Path) -> String {
