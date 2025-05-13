@@ -130,7 +130,7 @@ pub fn test_case(build_wrap_cmd: Option<&str>, test_case: &TestCase, stderr_expe
         stderr_expected.is_empty(),
         output.status.success(),
         "{test_case:?} failed in `{}`",
-        temp_package.into_path().display()
+        temp_package.path().display()
     );
 
     if stderr_expected.is_empty() {
