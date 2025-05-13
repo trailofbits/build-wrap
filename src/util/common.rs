@@ -276,7 +276,7 @@ fn enabled(name: &str) -> bool {
 }
 
 static ALLOWED_PACKAGE_NAMES: LazyLock<Vec<String>> = LazyLock::new(|| {
-    let base_directories = xdg::BaseDirectories::new().unwrap();
+    let base_directories = xdg::BaseDirectories::new();
     let Some(allowed) = base_directories.find_config_file("build-wrap/allow.txt") else {
         return Vec::new();
     };
