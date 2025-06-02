@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: main
-        uses: trailofbits/check-up-to-dateness@main
+        uses: trailofbits/check-up-to-dateness@v1
 
   test:
     needs: [check-up-to-dateness]
