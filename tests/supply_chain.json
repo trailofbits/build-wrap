@@ -276,6 +276,14 @@
         "name": "David Tolnay"
       }
     ],
+    "r-efi": [
+      {
+        "id": 12177,
+        "kind": "user",
+        "login": "dvdhrm",
+        "name": "David Rheinsberg"
+      }
+    ],
     "regex": [
       {
         "id": 1,
