@@ -37,14 +37,13 @@ const CARGO_TOML: &str = r#"
 [package]
 name = "build_script_wrapper"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 publish = false
 
 [dependencies]
 anyhow = "1.0"
-once_cell = "1.19"
-tempfile = "3.10"
-xdg = "2.5"
+tempfile = "3.20"
+xdg = "3.0"
 "#;
 
 /// A wrapper build script's src/main.rs consists of the following:
