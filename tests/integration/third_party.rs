@@ -14,11 +14,11 @@ use std::{
 fn third_party() {
     warn_if_go_build_exists();
 
-    config::for_each_test_case("tests/third_party", |build_wrap_cmd, path, stderr| {
+    config::for_each_test_case("tests/third_party", |name, build_wrap_cmd, path, stderr| {
         #[allow(clippy::explicit_write)]
         writeln!(
             std::io::stderr(),
-            "running third-party test: {}",
+            "running `{name}` third-party test: {}",
             path.display()
         )
         .unwrap();

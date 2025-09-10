@@ -1,10 +1,12 @@
 use anyhow::{Context, Result};
 use serde::Deserialize;
 use std::{
+    collections::HashMap,
     env::{consts, var_os},
     fs::{read_dir, read_to_string},
     io::Write,
     path::Path,
+    sync::LazyLock,
 };
 
 #[derive(Debug, Deserialize)]
@@ -12,13 +14,23 @@ pub struct Config {
     /// The operating system for which the stderr files are intended
     target_os: String,
 
+    /// Optional name of the command used in `BUILD_WRAP_CMD`. If unspecified, a default is
+    /// determined from `target_os`.
+    name: Option<String>,
+
     /// Value of `BUILD_WRAP_CMD`
     build_wrap_cmd: Option<String>,
 }
 
+static COMMAND_NAMES: LazyLock<HashMap<&str, &str>> = LazyLock::new(|| {
+    [("linux", "bwrap"), ("macos", "sandbox-exec")]
+        .into_iter()
+        .collect()
+});
+
 pub fn for_each_test_case(
     dir: impl AsRef<Path>,
-    f: impl Fn(Option<&str>, &Path, &str) -> Result<()>,
+    f: impl Fn(&str, Option<&str>, &Path, &str) -> Result<()>,
 ) -> Result<()> {
     let mut subdirs = Vec::new();
     let mut test_cases = Vec::new();
@@ -51,6 +63,11 @@ pub fn for_each_test_case(
         if config.target_os != consts::OS {
             continue;
         }
+        let name = config
+            .name
+            .as_deref()
+            .or_else(|| COMMAND_NAMES.get(config.target_os.as_str()).copied())
+            .unwrap();
         for test_case in &test_cases {
             let file_stem = test_case
                 .file_stem()
@@ -73,7 +90,7 @@ pub fn for_each_test_case(
             }
             let stderr = read_to_string(&stderr_path)
                 .with_context(|| format!("failed to read `{}`", stderr_path.display()))?;
-            f(config.build_wrap_cmd.as_deref(), test_case, &stderr)?;
+            f(name, config.build_wrap_cmd.as_deref(), test_case, &stderr)?;
         }
     }
 
