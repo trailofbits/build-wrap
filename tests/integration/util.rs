@@ -6,12 +6,12 @@
 // smoelius: Use this module with `pub` to avoid "unused ..." warnings.
 // See: https://users.rust-lang.org/t/invalid-dead-code-warning-for-submodule-in-integration-test/80259/2
 
-use anyhow::{Context, Result};
+use anyhow::{bail, Result};
 use cargo_metadata::{Metadata, MetadataCommand};
 use snapbox::assert_data_eq;
 use std::{
     env,
-    ffi::OsString,
+    ffi::{OsStr, OsString},
     fs::{copy, create_dir, write, OpenOptions},
     io::Write,
     path::{Path, PathBuf},
@@ -121,6 +121,7 @@ pub fn test_case(build_wrap_cmd: Option<&str>, test_case: &TestCase, stderr_expe
     command.arg("--all-features");
     if let Some(build_wrap_cmd) = build_wrap_cmd {
         prepend_scripts_to_path(&mut command).unwrap();
+        prepend_out_dir_to_path(&mut command).unwrap();
         command.env("BUILD_WRAP_CMD", build_wrap_cmd);
     }
     command.current_dir(&temp_package);
@@ -149,14 +150,33 @@ fn prepend_scripts_to_path(command: &mut Command) -> Result<()> {
     Ok(())
 }
 
+// smoelius: `prepend_out_dir_to_path` allows `BUILD_WRAP_CMD`s to refer to files in `OUT_DIR`.
+fn prepend_out_dir_to_path(command: &mut Command) -> Result<()> {
+    let out_dir = PathBuf::from(env!("OUT_DIR"));
+    prepend_to_path(command, out_dir)?;
+    Ok(())
+}
+
 pub fn prepend_to_path(command: &mut Command, path: PathBuf) -> Result<()> {
-    let paths = prepend_path(path)?;
+    let paths = if let Some(paths) = get_env(command, "PATH") {
+        prepend_path(path, paths)?
+    } else if let Some(paths) = env::var_os("PATH") {
+        prepend_path(path, &paths)?
+    } else {
+        bail!("`PATH` is unset");
+    };
     command.env("PATH", paths);
     Ok(())
 }
 
-pub fn prepend_path(path: PathBuf) -> Result<OsString> {
-    let paths = env::var_os("PATH").with_context(|| "`PATH` is unset")?;
+fn get_env(command: &Command, needle: impl AsRef<OsStr>) -> Option<&OsStr> {
+    let needle = needle.as_ref();
+    command
+        .get_envs()
+        .find_map(|(key, val)| if key == needle { val } else { None })
+}
+
+pub fn prepend_path(path: PathBuf, paths: &OsStr) -> Result<OsString> {
     let paths_split = env::split_paths(&paths);
     let paths_chained = std::iter::once(path).chain(paths_split);
     let paths_joined = env::join_paths(paths_chained)?;
