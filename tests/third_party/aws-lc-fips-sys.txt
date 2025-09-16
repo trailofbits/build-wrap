@@ -1,6 +1,0 @@
-# smoelius: https://github.com/rust-lang/docs.rs/issues/2513#issuecomment-2132648674
-
-# smoelius: Pinning to version 0.12.14 as the bug seems to have been fixed with version 0.12.15:
-# https://github.com/aws/aws-lc-rs/commit/c236deb20dc969bc1fcfe3458aa6031790efcec9
-
-0.12.14
