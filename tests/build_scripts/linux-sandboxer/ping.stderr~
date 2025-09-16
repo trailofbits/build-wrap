@@ -1,0 +1,7 @@
+# smoelius: From what I can tell, Linux's landlock feature cannot be used to prevent all outbound
+# network traffic, jut TCP traffic. So I am disabling the `ping` test with `sandboxer`. (I don't
+# know why the test was passing before.)
+
+...
+  ping: socket: Operation not permitted
+...

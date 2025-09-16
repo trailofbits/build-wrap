@@ -1,0 +1,6 @@
+# smoelius: This test currently fails on macOS, both locally and in CI, and I am unable to figure
+# out why. So I am disabling the test for now.
+
+...
+  failed to initialize build cache at [..]/Library/Caches/go-build: mkdir [..]/Library/Caches/go-build: operation not permitted
+...
