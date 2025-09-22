@@ -159,7 +159,7 @@ fn noble_numbat_or_later() -> Result<bool> {
         );
     };
     let Some(captures) = VERSION_ID_RE.captures(version_id) else {
-        bail!("failed to parse version id: {:?}", version_id);
+        bail!("failed to parse version id: {version_id:?}");
     };
     assert_eq!(2, captures.len());
     let version_major = u64::from_str(captures.get(1).unwrap().as_str())?;
@@ -173,7 +173,7 @@ fn parse_env_file(path: &Path) -> Result<BTreeMap<String, String>> {
     let contents = read_to_string(path)?;
     for line in contents.lines() {
         let Some(captures) = ENV_LINE_RE.captures(line) else {
-            bail!("failed to parse line: {:?}", line);
+            bail!("failed to parse line: {line:?}");
         };
         assert_eq!(3, captures.len());
         let key = captures.get(1).unwrap().as_str();
