@@ -3,7 +3,7 @@ name = "build-wrap"
 version = "0.5.1"
 authors = ["Samuel Moelius <sam@moeli.us>"]
 description = "Help protect against malicious build scripts"
-edition = "2021"
+edition = "2024"
 license = "AGPL-3.0"
 repository = "https://github.com/trailofbits/build-wrap"
 

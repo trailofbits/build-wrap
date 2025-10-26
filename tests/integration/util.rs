@@ -25,7 +25,9 @@ pub use main_util::*;
 
 #[ctor::ctor]
 fn initialize() {
-    env::set_var("CARGO_TERM_COLOR", "never");
+    unsafe {
+        env::set_var("CARGO_TERM_COLOR", "never");
+    }
 }
 
 #[must_use]
