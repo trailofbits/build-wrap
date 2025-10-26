@@ -1,3 +1,4 @@
 comment_width = 100
 format_strings = true
 wrap_comments = true
+style_edition = "2024"

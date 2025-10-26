@@ -1,10 +1,10 @@
 use crate::util::ToUtf8;
-use anyhow::{anyhow, Result};
+use anyhow::{Result, anyhow};
 use std::{
     fs::{create_dir, rename, write},
     path::Path,
 };
-use tempfile::{tempdir, NamedTempFile, TempDir};
+use tempfile::{NamedTempFile, TempDir, tempdir};
 
 #[allow(clippy::disallowed_methods)]
 pub fn package(build_script_path: &Path) -> Result<TempDir> {

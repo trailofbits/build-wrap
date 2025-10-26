@@ -1,10 +1,10 @@
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use regex::Regex;
 use std::{
     collections::BTreeMap,
     env::{args, current_exe},
     fs::read_to_string,
-    io::{stdout, IsTerminal},
+    io::{IsTerminal, stdout},
     path::Path,
     str::FromStr,
     sync::LazyLock,

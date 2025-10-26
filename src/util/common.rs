@@ -1,6 +1,6 @@
 //! This file is included verbatim in the wrapper build script's src/main.rs file.
 
-use anyhow::{anyhow, bail, ensure, Context, Result};
+use anyhow::{Context, Result, anyhow, bail, ensure};
 use std::{
     env,
     fs::{canonicalize, read_to_string},
@@ -134,10 +134,11 @@ fn split_escaped(mut s: &str) -> Result<Vec<String>> {
     while let Some(i) = s.find(|c: char| c.is_ascii_whitespace() || c == '\\') {
         debug_assert!(!v.is_empty());
         // smoelius: Only the last string in `v` can be empty.
-        debug_assert!(v
-            .iter()
-            .position(String::is_empty)
-            .is_none_or(|i| i == v.len() - 1));
+        debug_assert!(
+            v.iter()
+                .position(String::is_empty)
+                .is_none_or(|i| i == v.len() - 1)
+        );
 
         let c = s.as_bytes()[i];
 
