@@ -1,8 +1,8 @@
-use anyhow::{ensure, Result};
+use anyhow::{Result, ensure};
 use std::{env, ffi::OsString, fs::canonicalize, path::PathBuf, process::Command};
 
 mod common;
-pub use common::{exec_forwarding_output, ToUtf8};
+pub use common::{ToUtf8, exec_forwarding_output};
 
 #[cfg(test)]
 #[allow(unused_imports)]

@@ -1,8 +1,8 @@
 use crate::{
     config,
-    util::{test_case, TestCase, ToUtf8},
+    util::{TestCase, ToUtf8, test_case},
 };
-use anyhow::{ensure, Result};
+use anyhow::{Result, ensure};
 use assert_cmd::Command;
 use std::{
     fs::read_to_string,

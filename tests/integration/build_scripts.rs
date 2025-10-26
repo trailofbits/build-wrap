@@ -1,6 +1,6 @@
 use crate::{
     config,
-    util::{test_case, TestCase},
+    util::{TestCase, test_case},
 };
 use std::io::Write;
 

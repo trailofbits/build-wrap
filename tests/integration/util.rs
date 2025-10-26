@@ -6,13 +6,13 @@
 // smoelius: Use this module with `pub` to avoid "unused ..." warnings.
 // See: https://users.rust-lang.org/t/invalid-dead-code-warning-for-submodule-in-integration-test/80259/2
 
-use anyhow::{bail, Result};
+use anyhow::{Result, bail};
 use cargo_metadata::{Metadata, MetadataCommand};
 use snapbox::assert_data_eq;
 use std::{
     env,
     ffi::{OsStr, OsString},
-    fs::{copy, create_dir, write, OpenOptions},
+    fs::{OpenOptions, copy, create_dir, write},
     io::Write,
     path::{Path, PathBuf},
     process::Command,

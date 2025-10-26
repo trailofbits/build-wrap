@@ -1,4 +1,4 @@
-use crate::{util, wrapper, DEFAULT_CMD};
+use crate::{DEFAULT_CMD, util, wrapper};
 use anyhow::Result;
 use std::{
     env::{var, var_os},
