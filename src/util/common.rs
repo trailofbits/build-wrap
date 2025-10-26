@@ -302,7 +302,9 @@ mod test {
 
     #[test]
     fn expand_cmd() {
-        set_var("KEY", "VALUE");
+        unsafe {
+            set_var("KEY", "VALUE");
+        }
 
         let successes = [
             ("left path right", "{}"),
