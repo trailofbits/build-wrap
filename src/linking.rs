@@ -17,12 +17,12 @@ pub fn link(args: &[String]) -> Result<()> {
 
     // smoelius: Don't wrap if `RUSTC_WRAPPER` or `RUSTC_WORKSPACE_WRAPPER` is set. That usually
     // means that Clippy or Dylint is being run.
-    if var_os("RUSTC_WRAPPER").is_none() && var_os("RUSTC_WORKSPACE_WRAPPER").is_none() {
-        if let Some(path) = output_path(args.iter()) {
-            if is_build_script(&path) {
-                wrap(&linker, &path)?;
-            }
-        }
+    if var_os("RUSTC_WRAPPER").is_none()
+        && var_os("RUSTC_WORKSPACE_WRAPPER").is_none()
+        && let Some(path) = output_path(args.iter())
+        && is_build_script(&path)
+    {
+        wrap(&linker, &path)?;
     }
 
     Ok(())
@@ -41,10 +41,10 @@ where
     I: Iterator<Item = &'a String>,
 {
     while let Some(arg) = iter.next() {
-        if arg == "-o" {
-            if let Some(path) = iter.next() {
-                return Some(path.into());
-            }
+        if arg == "-o"
+            && let Some(path) = iter.next()
+        {
+            return Some(path.into());
         }
     }
 

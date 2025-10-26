@@ -72,11 +72,10 @@ pub fn for_each_test_case(
             let file_stem = test_case
                 .file_stem()
                 .unwrap_or_else(|| panic!("`{}` has no file stem", test_case.display()));
-            if let Some(testname) = var_os("TESTNAME") {
-                if file_stem != testname {
+            if let Some(testname) = var_os("TESTNAME")
+                && file_stem != testname {
                     return Ok(());
                 }
-            }
             let stderr_path = subdir.join(file_stem).with_extension("stderr");
             if !stderr_path.try_exists()? {
                 #[allow(clippy::explicit_write)]
