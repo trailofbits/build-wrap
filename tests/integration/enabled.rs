@@ -1,5 +1,4 @@
 use crate::util;
-use assert_cmd::cargo::CommandCargoExt;
 use cargo_metadata::MetadataCommand;
 use std::{
     fs::{create_dir_all, write},
@@ -19,7 +18,7 @@ linker = "build-wrap""#,
     .unwrap();
 
     for set_path in [false, true] {
-        let mut command = Command::cargo_bin("build-wrap").unwrap();
+        let mut command = Command::new(env!("CARGO_BIN_EXE_build-wrap"));
         command.env("HOME", home.path());
         if set_path {
             let metadata = MetadataCommand::new().no_deps().exec().unwrap();
