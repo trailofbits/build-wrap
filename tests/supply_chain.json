@@ -8,76 +8,6 @@
         "name": "Andrew Gallant"
       }
     ],
-    "anstream": [
-      {
-        "id": 460,
-        "kind": "team",
-        "login": "github:rust-cli:maintainers",
-        "name": "Maintainers"
-      },
-      {
-        "id": 6743,
-        "kind": "user",
-        "login": "epage",
-        "name": "Ed Page"
-      }
-    ],
-    "anstyle": [
-      {
-        "id": 460,
-        "kind": "team",
-        "login": "github:rust-cli:maintainers",
-        "name": "Maintainers"
-      },
-      {
-        "id": 6743,
-        "kind": "user",
-        "login": "epage",
-        "name": "Ed Page"
-      }
-    ],
-    "anstyle-parse": [
-      {
-        "id": 460,
-        "kind": "team",
-        "login": "github:rust-cli:maintainers",
-        "name": "Maintainers"
-      },
-      {
-        "id": 6743,
-        "kind": "user",
-        "login": "epage",
-        "name": "Ed Page"
-      }
-    ],
-    "anstyle-query": [
-      {
-        "id": 460,
-        "kind": "team",
-        "login": "github:rust-cli:maintainers",
-        "name": "Maintainers"
-      },
-      {
-        "id": 6743,
-        "kind": "user",
-        "login": "epage",
-        "name": "Ed Page"
-      }
-    ],
-    "anstyle-wincon": [
-      {
-        "id": 460,
-        "kind": "team",
-        "login": "github:rust-cli:maintainers",
-        "name": "Maintainers"
-      },
-      {
-        "id": 6743,
-        "kind": "user",
-        "login": "epage",
-        "name": "Ed Page"
-      }
-    ],
     "anyhow": [
       {
         "id": 3618,
@@ -124,20 +54,6 @@
         "kind": "user",
         "login": "rust-lang-owner",
         "name": null
-      }
-    ],
-    "colorchoice": [
-      {
-        "id": 460,
-        "kind": "team",
-        "login": "github:rust-cli:maintainers",
-        "name": "Maintainers"
-      },
-      {
-        "id": 6743,
-        "kind": "user",
-        "login": "epage",
-        "name": "Ed Page"
       }
     ],
     "equivalent": [
@@ -248,14 +164,6 @@
         "kind": "user",
         "login": "cuviper",
         "name": "Josh Stone"
-      }
-    ],
-    "is_terminal_polyfill": [
-      {
-        "id": 6743,
-        "kind": "user",
-        "login": "epage",
-        "name": "Ed Page"
       }
     ],
     "libc": [
@@ -412,20 +320,6 @@
         "name": "Dan Gohman"
       }
     ],
-    "serde": [
-      {
-        "id": 3618,
-        "kind": "user",
-        "login": "dtolnay",
-        "name": "David Tolnay"
-      },
-      {
-        "id": 8138,
-        "kind": "team",
-        "login": "github:serde-rs:publish",
-        "name": "publish"
-      }
-    ],
     "serde_core": [
       {
         "id": 3618,
@@ -558,26 +452,6 @@
         "kind": "user",
         "login": "dtolnay",
         "name": "David Tolnay"
-      }
-    ],
-    "utf8parse": [
-      {
-        "id": 1317,
-        "kind": "user",
-        "login": "jwilm",
-        "name": "Joe Wilm"
-      },
-      {
-        "id": 1911,
-        "kind": "team",
-        "login": "github:alacritty:publishers",
-        "name": "Publishers"
-      },
-      {
-        "id": 8732,
-        "kind": "user",
-        "login": "chrisduerr",
-        "name": "Christian Duerr"
       }
     ],
     "wasi": [
