@@ -10,6 +10,7 @@ use std::{
     sync::LazyLock,
 };
 
+mod config;
 mod linking;
 mod util;
 mod wrapper;

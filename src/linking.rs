@@ -1,4 +1,4 @@
-use crate::{DEFAULT_CMD, util, wrapper};
+use crate::{DEFAULT_CMD, config, util, wrapper};
 use anyhow::Result;
 use std::{
     env::{var, var_os},
@@ -21,6 +21,7 @@ pub fn link(args: &[String]) -> Result<()> {
         && var_os("RUSTC_WORKSPACE_WRAPPER").is_none()
         && let Some(path) = output_path(args.iter())
         && is_build_script(&path)
+        && !config::allowed()
     {
         wrap(&linker, &path)?;
     }
