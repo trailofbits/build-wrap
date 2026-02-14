@@ -42,9 +42,9 @@ Note that the below environment variables are read **when a build script is link
   BUILD_WRAP_ALLOW=1 cargo build -vv
   ```
 
+  To disable sandboxing entirely for specific directories or packages, use [`$HOME/.config/build-wrap/config.toml`] (see below).
 
 - `BUILD_WRAP_CMD`: Command used to execute a build script. Linux default:
-
   - With comments:
 
     ```sh
@@ -91,6 +91,37 @@ Note that the below environment variables are read **when a build script is link
   (deny network*)                                  ;; Deny network access
   ```
 
+## `$HOME/.config/build-wrap/config.toml`
+
+If a file at `$HOME/.config/build-wrap/config.toml` exists, `build-wrap` reads it to determine which directories and packages should be allowed to build without sandboxing.
+
+The file supports `[allow]` and `[ignore]` sections, which are treated as synonyms:
+
+```toml
+[allow]
+directories = ["/home/user/project-a"]
+packages = ["aws-lc-fips-sys"]
+
+[ignore]
+directories = ["/home/user/project-b"]
+packages = ["svm-rs-builds"]
+```
+
+- `directories`: A list of directory paths. If `cargo build` is run from within a listed directory (or any subdirectory), `build-wrap` will not sandbox the build scripts.
+- `packages`: A list of package names. Build scripts belonging to listed packages will not be sandboxed.
+
+Both sections are merged, so entries from `[allow]` and `[ignore]` are combined.
+
+For example, if you frequently build in a project that has dependencies requiring unrestricted build scripts:
+
+```sh
+mkdir -p "$HOME/.config/build-wrap"
+cat > "$HOME/.config/build-wrap/config.toml" << 'EOF'
+[allow]
+packages = ["svm-rs-builds"]
+EOF
+```
+
 ## Environment variables that `build-wrap` treats as set
 
 Note that we say "treats as set" because these are considered only when [`BUILD_WRAP_CMD` is expanded].
@@ -135,6 +166,7 @@ The "wrapped" version of the build script does the following when invoked:
 [How `build-wrap` works]: #how-build-wrap-works
 [Ubuntu Community Wiki]: https://help.ubuntu.com/community/AppArmor
 [Ubuntu Server]: https://documentation.ubuntu.com/server/how-to/security/apparmor/
+[`$HOME/.config/build-wrap/config.toml`]: #homeconfigbuild-wrapconfigtoml
 [`BUILD_WRAP_CMD` is expanded]: #how-build_wrap_cmd-is-expanded
 [`cc-rs`]: https://github.com/rust-lang/cc-rs
 [`sandbox-exec`]: https://keith.github.io/xcode-man-pages/sandbox-exec.1.html

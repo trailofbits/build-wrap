@@ -276,7 +276,6 @@ fn enabled(name: &str) -> bool {
     env::var(name).is_ok_and(|value| value != "0")
 }
 
-
 #[cfg(test)]
 pub use test::assert_readme_contains_code_block;
 
