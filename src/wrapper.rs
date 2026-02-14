@@ -43,7 +43,6 @@ publish = false
 [dependencies]
 anyhow = "1.0"
 tempfile = "3.20"
-xdg = "3.0"
 "#;
 
 /// A wrapper build script's src/main.rs consists of the following:

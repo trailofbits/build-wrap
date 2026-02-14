@@ -3,7 +3,7 @@
 use anyhow::{Context, Result, anyhow, bail, ensure};
 use std::{
     env,
-    fs::{canonicalize, read_to_string},
+    fs::canonicalize,
     io::Write,
     os::unix::ffi::OsStrExt,
     path::Path,
@@ -84,7 +84,7 @@ fn exec_sibling(sibling_path_as_str: &str) -> Result<()> {
     // They will cause the wrapped build script to be rerun, however.
     let expanded_args = split_and_expand(sibling_path)?;
 
-    let allow_enabled = enabled("BUILD_WRAP_ALLOW") || package_name_allowed();
+    let allow_enabled = enabled("BUILD_WRAP_ALLOW");
 
     let mut command = Command::new(&expanded_args[0]);
     command.args(&expanded_args[1..]);
@@ -276,21 +276,6 @@ fn enabled(name: &str) -> bool {
     env::var(name).is_ok_and(|value| value != "0")
 }
 
-static ALLOWED_PACKAGE_NAMES: LazyLock<Vec<String>> = LazyLock::new(|| {
-    let base_directories = xdg::BaseDirectories::new();
-    let Some(allowed) = base_directories.find_config_file("build-wrap/allow.txt") else {
-        return Vec::new();
-    };
-    let contents = read_to_string(allowed).unwrap();
-    contents.lines().map(ToOwned::to_owned).collect()
-});
-
-fn package_name_allowed() -> bool {
-    let Ok(package_name) = env::var("CARGO_PKG_NAME") else {
-        return false;
-    };
-    ALLOWED_PACKAGE_NAMES.contains(&package_name)
-}
 
 #[cfg(test)]
 pub use test::assert_readme_contains_code_block;
