@@ -4,7 +4,6 @@ mod build_wrap_cmd_changed;
 mod cargo_target_dir;
 mod ci;
 mod config;
-mod config_allow;
 mod custom_build_name;
 mod dogfood;
 mod enabled;
