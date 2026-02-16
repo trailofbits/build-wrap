@@ -211,21 +211,22 @@ fn expand(mut cmd: &str, build_script_path: Option<&Path>) -> Result<String> {
         }
 
         if c == b'{'
-            && let Some(j) = cmd.find('}') {
-                if j == 0 {
-                    let s = build_script_path_as_str
-                        .as_ref()
-                        .ok_or_else(|| anyhow!("build script path is unavailable"))?;
-                    buf.push_str(s);
-                } else {
-                    let key = &cmd[..j];
-                    let value = var(key)
-                        .with_context(|| format!("environment variable `{key}` not found"))?;
-                    buf.push_str(&value);
-                }
-                cmd = &cmd[j + 1..];
-                continue;
+            && let Some(j) = cmd.find('}')
+        {
+            if j == 0 {
+                let s = build_script_path_as_str
+                    .as_ref()
+                    .ok_or_else(|| anyhow!("build script path is unavailable"))?;
+                buf.push_str(s);
+            } else {
+                let key = &cmd[..j];
+                let value =
+                    var(key).with_context(|| format!("environment variable `{key}` not found"))?;
+                buf.push_str(&value);
             }
+            cmd = &cmd[j + 1..];
+            continue;
+        }
 
         bail!("unbalanced '{}'", c as char);
     }
