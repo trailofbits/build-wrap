@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.6.0
+
+- BREAKING: Replace `$HOME/.config/build-wrap/allow.txt` with `$HOME/.config/build-wrap/config.toml`. Existing `allow.txt` files are now ignored. The new file supports `[allow]` and `[ignore]` sections with both `directories` and `packages` entries. ([212](https://github.com/trailofbits/build-wrap/pull/212))
+- Dependency upgrades:
+  - `toml` to version 1.0
+  - `xdg` to version 3.0
+
 ## 0.5.1
 
 - Eliminate reliance on `once_cell` ([115](https://github.com/trailofbits/build-wrap/pull/115))
