@@ -80,6 +80,14 @@
         "name": "Taiki Endo"
       }
     ],
+    "foldhash": [
+      {
+        "id": 24326,
+        "kind": "user",
+        "login": "orlp",
+        "name": "Orson Peters"
+      }
+    ],
     "getrandom": [
       {
         "id": 563,
@@ -106,6 +114,20 @@
         "kind": "user",
         "login": "rust-lang-owner",
         "name": null
+      }
+    ],
+    "heck": [
+      {
+        "id": 1613,
+        "kind": "user",
+        "login": "withoutboats",
+        "name": "srrrse"
+      },
+      {
+        "id": 6913,
+        "kind": "user",
+        "login": "jplatte",
+        "name": "Jonas Platte"
       }
     ],
     "home": [
@@ -140,6 +162,26 @@
         "name": null
       }
     ],
+    "id-arena": [
+      {
+        "id": 1,
+        "kind": "user",
+        "login": "alexcrichton",
+        "name": "Alex Crichton"
+      },
+      {
+        "id": 696,
+        "kind": "user",
+        "login": "fitzgen",
+        "name": "Nick Fitzgerald"
+      },
+      {
+        "id": 2699,
+        "kind": "user",
+        "login": "matklad",
+        "name": "Alex Kladov"
+      }
+    ],
     "indexmap": [
       {
         "id": 356,
@@ -152,6 +194,22 @@
         "kind": "user",
         "login": "cuviper",
         "name": "Josh Stone"
+      }
+    ],
+    "itoa": [
+      {
+        "id": 3618,
+        "kind": "user",
+        "login": "dtolnay",
+        "name": "David Tolnay"
+      }
+    ],
+    "leb128fmt": [
+      {
+        "id": 35113,
+        "kind": "user",
+        "login": "bluk",
+        "name": "Bryant Luk"
       }
     ],
     "libc": [
@@ -206,6 +264,44 @@
         "name": "Dan Gohman"
       }
     ],
+    "log": [
+      {
+        "id": 3,
+        "kind": "user",
+        "login": "huonw",
+        "name": "Huon Wilson"
+      },
+      {
+        "id": 5,
+        "kind": "user",
+        "login": "sfackler",
+        "name": "Steven Fackler"
+      },
+      {
+        "id": 14,
+        "kind": "team",
+        "login": "github:rust-lang-nursery:log-owners",
+        "name": "log-owners"
+      },
+      {
+        "id": 51,
+        "kind": "team",
+        "login": "github:rust-lang-nursery:libs",
+        "name": "libs"
+      },
+      {
+        "id": 3204,
+        "kind": "user",
+        "login": "KodrAus",
+        "name": "Ashley Mannix"
+      },
+      {
+        "id": 55123,
+        "kind": "user",
+        "login": "rust-lang-owner",
+        "name": null
+      }
+    ],
     "memchr": [
       {
         "id": 189,
@@ -226,6 +322,14 @@
         "kind": "user",
         "login": "vorner",
         "name": "Michal 'vorner' Vaner"
+      }
+    ],
+    "prettyplease": [
+      {
+        "id": 3618,
+        "kind": "user",
+        "login": "dtolnay",
+        "name": "David Tolnay"
       }
     ],
     "proc-macro2": [
@@ -308,6 +412,28 @@
         "name": "Dan Gohman"
       }
     ],
+    "semver": [
+      {
+        "id": 3618,
+        "kind": "user",
+        "login": "dtolnay",
+        "name": "David Tolnay"
+      }
+    ],
+    "serde": [
+      {
+        "id": 3618,
+        "kind": "user",
+        "login": "dtolnay",
+        "name": "David Tolnay"
+      },
+      {
+        "id": 8138,
+        "kind": "team",
+        "login": "github:serde-rs:publish",
+        "name": "publish"
+      }
+    ],
     "serde_core": [
       {
         "id": 3618,
@@ -323,6 +449,20 @@
       }
     ],
     "serde_derive": [
+      {
+        "id": 3618,
+        "kind": "user",
+        "login": "dtolnay",
+        "name": "David Tolnay"
+      },
+      {
+        "id": 8138,
+        "kind": "team",
+        "login": "github:serde-rs:publish",
+        "name": "publish"
+      }
+    ],
+    "serde_json": [
       {
         "id": 3618,
         "kind": "user",
@@ -442,7 +582,7 @@
         "name": "David Tolnay"
       }
     ],
-    "wasi": [
+    "unicode-xid": [
       {
         "id": 1,
         "kind": "user",
@@ -450,10 +590,86 @@
         "name": "Alex Crichton"
       },
       {
-        "id": 6825,
+        "id": 3,
         "kind": "user",
-        "login": "sunfishcode",
-        "name": "Dan Gohman"
+        "login": "huonw",
+        "name": "Huon Wilson"
+      },
+      {
+        "id": 7,
+        "kind": "user",
+        "login": "SimonSapin",
+        "name": "Simon Sapin"
+      },
+      {
+        "id": 1139,
+        "kind": "user",
+        "login": "Manishearth",
+        "name": "Manish Goregaokar"
+      },
+      {
+        "id": 1458,
+        "kind": "user",
+        "login": "kwantam",
+        "name": "Riad S. Wahby"
+      },
+      {
+        "id": 21056,
+        "kind": "user",
+        "login": "sujayakar",
+        "name": "Sujay Jayakar"
+      }
+    ],
+    "wasip2": [
+      {
+        "id": 1,
+        "kind": "user",
+        "login": "alexcrichton",
+        "name": "Alex Crichton"
+      },
+      {
+        "id": 73222,
+        "kind": "user",
+        "login": "wasmtime-publish",
+        "name": null
+      }
+    ],
+    "wasip3": [
+      {
+        "id": 1,
+        "kind": "user",
+        "login": "alexcrichton",
+        "name": "Alex Crichton"
+      },
+      {
+        "id": 73222,
+        "kind": "user",
+        "login": "wasmtime-publish",
+        "name": null
+      }
+    ],
+    "wasm-encoder": [
+      {
+        "id": 73222,
+        "kind": "user",
+        "login": "wasmtime-publish",
+        "name": null
+      }
+    ],
+    "wasm-metadata": [
+      {
+        "id": 73222,
+        "kind": "user",
+        "login": "wasmtime-publish",
+        "name": null
+      }
+    ],
+    "wasmparser": [
+      {
+        "id": 73222,
+        "kind": "user",
+        "login": "wasmtime-publish",
+        "name": null
       }
     ],
     "windows-link": [
@@ -472,78 +688,6 @@
         "name": "Kenny Kerr"
       }
     ],
-    "windows-targets": [
-      {
-        "id": 64539,
-        "kind": "user",
-        "login": "kennykerr",
-        "name": "Kenny Kerr"
-      }
-    ],
-    "windows_aarch64_gnullvm": [
-      {
-        "id": 64539,
-        "kind": "user",
-        "login": "kennykerr",
-        "name": "Kenny Kerr"
-      }
-    ],
-    "windows_aarch64_msvc": [
-      {
-        "id": 64539,
-        "kind": "user",
-        "login": "kennykerr",
-        "name": "Kenny Kerr"
-      }
-    ],
-    "windows_i686_gnu": [
-      {
-        "id": 64539,
-        "kind": "user",
-        "login": "kennykerr",
-        "name": "Kenny Kerr"
-      }
-    ],
-    "windows_i686_gnullvm": [
-      {
-        "id": 64539,
-        "kind": "user",
-        "login": "kennykerr",
-        "name": "Kenny Kerr"
-      }
-    ],
-    "windows_i686_msvc": [
-      {
-        "id": 64539,
-        "kind": "user",
-        "login": "kennykerr",
-        "name": "Kenny Kerr"
-      }
-    ],
-    "windows_x86_64_gnu": [
-      {
-        "id": 64539,
-        "kind": "user",
-        "login": "kennykerr",
-        "name": "Kenny Kerr"
-      }
-    ],
-    "windows_x86_64_gnullvm": [
-      {
-        "id": 64539,
-        "kind": "user",
-        "login": "kennykerr",
-        "name": "Kenny Kerr"
-      }
-    ],
-    "windows_x86_64_msvc": [
-      {
-        "id": 64539,
-        "kind": "user",
-        "login": "kennykerr",
-        "name": "Kenny Kerr"
-      }
-    ],
     "winnow": [
       {
         "id": 6743,
@@ -552,7 +696,47 @@
         "name": "Ed Page"
       }
     ],
-    "wit-bindgen-rt": [
+    "wit-bindgen": [
+      {
+        "id": 73222,
+        "kind": "user",
+        "login": "wasmtime-publish",
+        "name": null
+      }
+    ],
+    "wit-bindgen-core": [
+      {
+        "id": 73222,
+        "kind": "user",
+        "login": "wasmtime-publish",
+        "name": null
+      }
+    ],
+    "wit-bindgen-rust": [
+      {
+        "id": 73222,
+        "kind": "user",
+        "login": "wasmtime-publish",
+        "name": null
+      }
+    ],
+    "wit-bindgen-rust-macro": [
+      {
+        "id": 73222,
+        "kind": "user",
+        "login": "wasmtime-publish",
+        "name": null
+      }
+    ],
+    "wit-component": [
+      {
+        "id": 73222,
+        "kind": "user",
+        "login": "wasmtime-publish",
+        "name": null
+      }
+    ],
+    "wit-parser": [
       {
         "id": 73222,
         "kind": "user",
@@ -566,6 +750,14 @@
         "kind": "user",
         "login": "whitequark",
         "name": "whitequark"
+      }
+    ],
+    "zmij": [
+      {
+        "id": 3618,
+        "kind": "user",
+        "login": "dtolnay",
+        "name": "David Tolnay"
       }
     ]
   },
