@@ -59,7 +59,15 @@ static ENABLED: LazyLock<&str> = LazyLock::new(|| {
     }
 });
 
-static DISABLED: LazyLock<&str> = LazyLock::new(|| {
+static DISABLED_YELLOW: LazyLock<&str> = LazyLock::new(|| {
+    if stdout().is_terminal() {
+        "\x1b[1;33mDISABLED\x1b[0m"
+    } else {
+        "DISABLED"
+    }
+});
+
+static DISABLED_RED: LazyLock<&str> = LazyLock::new(|| {
     if stdout().is_terminal() {
         "\x1b[1;31mDISABLED\x1b[0m"
     } else {
@@ -79,10 +87,15 @@ A linker replacement to help protect against malicious build scripts
     let result = enabled();
     if matches!(result, Ok(true)) {
         let enabled = *ENABLED;
-        println!("build-wrap is {enabled}");
+        if config::directory_allowed() {
+            let disabled = *DISABLED_YELLOW;
+            println!("build-wrap is {enabled} (but {disabled} in this directory)");
+        } else {
+            println!("build-wrap is {enabled}");
+        }
         return;
     }
-    let disabled = *DISABLED;
+    let disabled = *DISABLED_RED;
     let msg = result
         .err()
         .map(|error| format!(": {error}"))
