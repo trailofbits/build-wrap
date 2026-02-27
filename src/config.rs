@@ -56,7 +56,7 @@ pub fn allowed() -> bool {
     directory_allowed() || package_allowed()
 }
 
-fn directory_allowed() -> bool {
+pub fn directory_allowed() -> bool {
     let Ok(cwd) = env::current_dir() else {
         return false;
     };
