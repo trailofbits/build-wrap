@@ -12,7 +12,7 @@ repository = "https://github.com/trailofbits/build-wrap"
 anyhow = "1.0"
 home = "0.5"
 regex = "1.12"
-tempfile = "3.25"
+tempfile = "3.26"
 toml = "1.0"
 xdg = "3.0"
 
