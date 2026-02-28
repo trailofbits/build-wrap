@@ -25,6 +25,15 @@ impl Config {
             return Self::default();
         };
 
+        for key in table.keys() {
+            if key != "allow" && key != "ignore" {
+                eprintln!(
+                    "warning: {}: unrecognized table `[{key}]`",
+                    path.display(),
+                );
+            }
+        }
+
         let mut directories = Vec::new();
         let mut packages = Vec::new();
 
@@ -152,6 +161,23 @@ directories = ["/tmp/myproject"]
 
         let config = Config::load_from(&path_buf);
         assert_eq!(config.directories, vec!["/tmp/myproject"]);
+        assert!(config.packages.is_empty());
+    }
+
+    #[test]
+    fn unrecognized_table() {
+        let dir = tempfile::tempdir().unwrap();
+        let path_buf = dir.path().join("config.toml");
+        write(
+            &path_buf,
+            r#"
+[allowed]
+packages = ["foo"]
+"#,
+        )
+        .unwrap();
+
+        let config = Config::load_from(&path_buf);
         assert!(config.packages.is_empty());
     }
 
