@@ -7,6 +7,7 @@ mod config;
 mod config_toml;
 mod custom_build_name;
 mod dogfood;
+mod edition_2021;
 mod enabled;
 mod third_party;
 mod util;
