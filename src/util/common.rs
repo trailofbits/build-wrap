@@ -210,9 +210,10 @@ fn expand(mut cmd: &str, build_script_path: Option<&Path>) -> Result<String> {
             continue;
         }
 
-        if c == b'{'
-            && let Some(j) = cmd.find('}')
-        {
+        if c == b'{' {
+            let Some(j) = cmd.find('}') else {
+                bail!("unbalanced '{{'");
+            };
             if j == 0 {
                 let s = build_script_path_as_str
                     .as_ref()

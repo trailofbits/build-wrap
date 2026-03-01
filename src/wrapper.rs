@@ -37,7 +37,7 @@ const CARGO_TOML: &str = r#"
 [package]
 name = "build_script_wrapper"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
 publish = false
 
 [dependencies]
