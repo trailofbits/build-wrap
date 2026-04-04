@@ -22,7 +22,7 @@ cargo_metadata = "0.23"
 ctor = "0.8"
 serde = "1.0"
 serde_json = "1.0"
-similar-asserts = "1.7"
+similar-asserts = "2.0"
 snapbox = "1.2"
 
 [lints.clippy]
