@@ -21,7 +21,8 @@ pub fn link(args: &[String]) -> Result<()> {
         && var_os("RUSTC_WORKSPACE_WRAPPER").is_none()
         && let Some(path) = output_path(args.iter())
         && is_build_script(&path)
-        && !config::allowed()
+        && !config::directory_allowed(&path)
+        && !config::package_allowed()
     {
         wrap(&linker, &path)?;
     }
