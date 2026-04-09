@@ -27,10 +27,7 @@ impl Config {
 
         for key in table.keys() {
             if key != "allow" && key != "ignore" {
-                eprintln!(
-                    "warning: {}: unrecognized table `[{key}]`",
-                    path.display(),
-                );
+                eprintln!("warning: {}: unrecognized table `[{key}]`", path.display());
             }
         }
 
