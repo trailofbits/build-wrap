@@ -58,18 +58,11 @@ fn extend_from_string_array(vec: &mut Vec<String>, value: Option<&toml::Value>) 
     }
 }
 
-pub fn allowed() -> bool {
-    directory_allowed() || package_allowed()
+pub fn directory_allowed(path: &Path) -> bool {
+    CONFIG.directories.iter().any(|d| path.starts_with(d))
 }
 
-pub fn directory_allowed() -> bool {
-    let Ok(cwd) = env::current_dir() else {
-        return false;
-    };
-    CONFIG.directories.iter().any(|d| cwd.starts_with(d))
-}
-
-fn package_allowed() -> bool {
+pub fn package_allowed() -> bool {
     let Ok(name) = env::var("CARGO_PKG_NAME") else {
         return false;
     };

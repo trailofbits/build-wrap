@@ -2,7 +2,7 @@ use anyhow::{Context, Result, bail};
 use regex::Regex;
 use std::{
     collections::BTreeMap,
-    env::{args, current_exe},
+    env::{args, current_dir, current_exe},
     fs::read_to_string,
     io::{IsTerminal, stdout},
     path::Path,
@@ -87,7 +87,7 @@ A linker replacement to help protect against malicious build scripts
     let result = enabled();
     if matches!(result, Ok(true)) {
         let enabled = *ENABLED;
-        if config::directory_allowed() {
+        if current_dir().is_ok_and(|cwd| config::directory_allowed(&cwd)) {
             let disabled = *DISABLED_YELLOW;
             println!("build-wrap is {enabled} (but {disabled} in this directory)");
         } else {
