@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.6.1
+
+- Expand version message ([09c5cc4](https://github.com/trailofbits/build-wrap/commit/09c5cc4fcf294128217563196effdbb9c39903db))
+- Warn when an unrecognized key is found in config.toml ([b1766cb](https://github.com/trailofbits/build-wrap/commit/b1766cbc5c08bc075c1f7152ce1d7c6b0ed7e36c))
+- Ensure `build-wrap` works with edition 2021 ([9620f4a](https://github.com/trailofbits/build-wrap/commit/9620f4a679dc0b230628d61df6634a64a7164dd1))
+- Implement fix for build scripts in output directories ([83c00d2](https://github.com/trailofbits/build-wrap/commit/83c00d2637d64936f87f504eefdf6d01ada14f71))
+
 ## 0.6.0
 
 - BREAKING: Replace `$HOME/.config/build-wrap/allow.txt` with `$HOME/.config/build-wrap/config.toml`. Existing `allow.txt` files are now ignored. The new file supports `[allow]` and `[ignore]` sections with both `directories` and `packages` entries. ([212](https://github.com/trailofbits/build-wrap/pull/212))
