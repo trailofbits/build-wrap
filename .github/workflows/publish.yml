@@ -1,4 +1,4 @@
-# https://blog.rust-lang.org/2025/07/11/crates-io-development-update-2025-07/
+# smoelius: Based on: https://blog.rust-lang.org/2025/07/11/crates-io-development-update-2025-07/
 
 name: Publish to crates.io
 
