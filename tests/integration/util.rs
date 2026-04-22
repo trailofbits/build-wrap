@@ -14,6 +14,7 @@ use std::{
     ffi::{OsStr, OsString},
     fs::{OpenOptions, copy, create_dir, write},
     io::Write,
+    net::TcpListener,
     path::{Path, PathBuf},
     process::Command,
     sync::LazyLock,
@@ -126,6 +127,7 @@ pub fn test_case(build_wrap_cmd: Option<&str>, test_case: &TestCase, stderr_expe
         prepend_out_dir_to_path(&mut command).unwrap();
         command.env("BUILD_WRAP_CMD", build_wrap_cmd);
     }
+    let _tcp_listener = create_tcp_listener(&mut command, test_case).unwrap();
     command.current_dir(&temp_package);
 
     let output = exec_forwarding_output(command, false).unwrap();
@@ -183,4 +185,27 @@ pub fn prepend_path(path: PathBuf, paths: &OsStr) -> Result<OsString> {
     let paths_chained = std::iter::once(path).chain(paths_split);
     let paths_joined = env::join_paths(paths_chained)?;
     Ok(paths_joined)
+}
+
+/// Creates a local TCP listener for the `tcp_connect` build-script test.
+///
+/// The listener binds to an ephemeral loopback port, passes that port through
+/// `BUILD_WRAP_TCP_PORT`, and is returned so it stays open while the command runs.
+/// Non-`tcp_connect` test cases return `None`.
+///
+/// `create_tcp_listener` creates a TCP listener so that a build script can attempt a real TCP
+/// connect. `sandboxer` is configured to restrict TCP connects. `ping` uses ICMP rather than TCP,
+/// so it cannot be used to test that restriction.
+fn create_tcp_listener(command: &mut Command, test_case: &TestCase) -> Result<Option<TcpListener>> {
+    let TestCase::BuildScript(path) = test_case else {
+        return Ok(None);
+    };
+    if path.file_name() != Some(OsStr::new("tcp_connect.rs")) {
+        return Ok(None);
+    }
+    let listener = TcpListener::bind(("127.0.0.1", 0))?;
+    let local_addr = listener.local_addr()?;
+    let port = local_addr.port().to_string();
+    command.env("BUILD_WRAP_TCP_PORT", port);
+    Ok(Some(listener))
 }
