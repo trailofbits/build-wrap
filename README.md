@@ -93,7 +93,7 @@ Note that the below environment variables are read **when a build script is link
 
 ## `$HOME/.config/build-wrap/config.toml`
 
-If a file at `$HOME/.config/build-wrap/config.toml` exists, `build-wrap` reads it to determine which directories and packages should be allowed to build without sandboxing.
+If a file at `$HOME/.config/build-wrap/config.toml` exists, `build-wrap` reads it to determine which directories and packages should be allowed to build without sandboxing. Like the environment variables above, this file is consulted when a build script is linked. Changing it does not affect already linked build scripts.
 
 The file supports `[allow]` and `[ignore]` sections, which are treated as synonyms:
 
