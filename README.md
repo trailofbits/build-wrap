@@ -107,7 +107,7 @@ directories = ["/home/user/project-b"]
 packages = ["svm-rs-builds"]
 ```
 
-- `directories`: A list of directory paths. If `cargo build` is run from within a listed directory (or any subdirectory), `build-wrap` will not sandbox the build scripts.
+- `directories`: A list of directory paths. If `cargo build` is run from within a listed directory (or any subdirectory), `build-wrap` will not sandbox the build scripts. A leading `~` or `~/` is expanded to the current user's home directory.
 - `packages`: A list of package names. Build scripts belonging to listed packages will not be sandboxed.
 
 Both sections are merged, so entries from `[allow]` and `[ignore]` are combined.

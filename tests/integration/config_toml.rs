@@ -75,6 +75,43 @@ fn config_toml_ignore_directories_with_output_path() {
     config_toml_directories("ignore", true);
 }
 
+#[test]
+fn config_toml_allow_directories_with_tilde() {
+    for allowed in [false, true] {
+        let temp_package = util::temp_package(Some("tests/build_scripts/ping.rs"), []).unwrap();
+        // Make `HOME` the package's parent so `~/...` expands to the package directory.
+        let home = temp_package.path().parent().unwrap();
+        let config_dir = home.join(".config/build-wrap");
+        create_dir_all(&config_dir).unwrap();
+
+        let allowed_dir = format!(
+            "~/{}",
+            temp_package.path().file_name().unwrap().to_str().unwrap()
+        );
+        let config_contents = format!(
+            "\
+[allow]
+directories = [\"{allowed_dir}\"]
+"
+        );
+        write(config_dir.join("config.toml"), &config_contents).unwrap();
+
+        let mut command = util::build_with_build_wrap();
+        command.env_remove("XDG_CONFIG_HOME");
+        if allowed {
+            command.env("HOME", home);
+        }
+        command.current_dir(&temp_package);
+
+        let output = util::exec_forwarding_output(command, false).unwrap();
+        assert_eq!(allowed, output.status.success());
+        if !allowed {
+            let stderr = std::str::from_utf8(&output.stderr).unwrap();
+            assert!(stderr.contains("command failed"));
+        }
+    }
+}
+
 fn config_toml_directories(section: &str, match_output_path_only: bool) {
     let home = util::tempdir().unwrap();
     let config_dir = home.path().join(".config/build-wrap");

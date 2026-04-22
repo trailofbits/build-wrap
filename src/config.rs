@@ -1,10 +1,15 @@
-use std::{env, fs::read_to_string, path::Path, sync::LazyLock};
+use std::{
+    env,
+    fs::read_to_string,
+    path::{Path, PathBuf},
+    sync::LazyLock,
+};
 
 static CONFIG: LazyLock<Config> = LazyLock::new(Config::load);
 
 #[derive(Default)]
 struct Config {
-    directories: Vec<String>,
+    directories: Vec<PathBuf>,
     packages: Vec<String>,
 }
 
@@ -36,7 +41,7 @@ impl Config {
 
         for section in ["allow", "ignore"] {
             if let Some(table) = table.get(section).and_then(toml::Value::as_table) {
-                extend_from_string_array(&mut directories, table.get("directories"));
+                extend_directories(&mut directories, table.get("directories"));
                 extend_from_string_array(&mut packages, table.get("packages"));
             }
         }
@@ -44,6 +49,16 @@ impl Config {
         Self {
             directories,
             packages,
+        }
+    }
+}
+
+fn extend_directories(vec: &mut Vec<PathBuf>, value: Option<&toml::Value>) {
+    if let Some(array) = value.and_then(toml::Value::as_array) {
+        for item in array {
+            if let Some(s) = item.as_str() {
+                vec.push(expand_tilde(s));
+            }
         }
     }
 }
@@ -56,6 +71,24 @@ fn extend_from_string_array(vec: &mut Vec<String>, value: Option<&toml::Value>) 
             }
         }
     }
+}
+
+fn expand_tilde(s: &str) -> PathBuf {
+    expand_tilde_with_home(s, home::home_dir())
+}
+
+fn expand_tilde_with_home(s: &str, home: Option<PathBuf>) -> PathBuf {
+    if s == "~" {
+        return home.unwrap_or_else(|| PathBuf::from(s));
+    }
+
+    if let Some(suffix) = s.strip_prefix("~/")
+        && let Some(home) = home
+    {
+        return home.join(suffix);
+    }
+
+    PathBuf::from(s)
 }
 
 pub fn directory_allowed(path: &Path) -> bool {
@@ -73,7 +106,7 @@ pub fn package_allowed() -> bool {
 #[allow(clippy::disallowed_methods)]
 mod test {
     use super::*;
-    use std::fs::write;
+    use std::{fs::write, path::PathBuf};
 
     const EXAMPLE_CONFIG: &str = r#"
 [allow]
@@ -95,9 +128,23 @@ packages = ["svm-rs-builds"]
 
         assert_eq!(
             config.directories,
-            vec!["/home/user/project-a", "/home/user/project-b"]
+            vec![
+                PathBuf::from("/home/user/project-a"),
+                PathBuf::from("/home/user/project-b")
+            ]
         );
         assert_eq!(config.packages, vec!["aws-lc-fips-sys", "svm-rs-builds"]);
+    }
+
+    #[test]
+    fn expand_tilde_expands_home_dir() {
+        let dir = tempfile::tempdir().unwrap();
+        let home = dir.path().join("home");
+        assert_eq!(expand_tilde_with_home("~", Some(home.clone())), home);
+        assert_eq!(
+            expand_tilde_with_home("~/project", Some(home.clone())),
+            home.join("project")
+        );
     }
 
     #[test]
@@ -150,7 +197,7 @@ directories = ["/tmp/myproject"]
         .unwrap();
 
         let config = Config::load_from(&path_buf);
-        assert_eq!(config.directories, vec!["/tmp/myproject"]);
+        assert_eq!(config.directories, vec![PathBuf::from("/tmp/myproject")]);
         assert!(config.packages.is_empty());
     }
 
