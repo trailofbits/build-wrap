@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.7.0
+
+- Documentation improvements ([1722eb3](https://github.com/trailofbits/build-wrap/commit/1722eb393c1557db5b83a4dcbe11f6c3c25bcbb2))
+- FEATURE: `build-wrap` now supports tilde expansion in configuration files ([47c0fd8](https://github.com/trailofbits/build-wrap/commit/47c0fd8ec4c998290d4ba01bd70e7fd0b4838561))
+
 ## 0.6.1
 
 - Expand version message ([09c5cc4](https://github.com/trailofbits/build-wrap/commit/09c5cc4fcf294128217563196effdbb9c39903db))
