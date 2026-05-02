@@ -504,12 +504,6 @@
         "kind": "user",
         "login": "Stebalien",
         "name": "Steven Allen"
-      },
-      {
-        "id": 3204,
-        "kind": "user",
-        "login": "KodrAus",
-        "name": "Ashley Mannix"
       }
     ],
     "toml": [
