@@ -119,7 +119,7 @@ pub fn split_and_expand(build_script_path: &Path) -> Result<Vec<String>> {
         .into_iter()
         .map(|arg| expand(&arg, Some(build_script_path)))
         .collect::<Result<Vec<_>>>()?;
-    eprintln!("expanded `BUILD_WRAP_CMD`: {:#?}", &expanded_args);
+    eprintln!("expanded `BUILD_WRAP_CMD`: {expanded_args:#?}");
     ensure!(
         !expanded_args.is_empty(),
         "expanded `BUILD_WRAP_CMD` is empty or all whitespace"
