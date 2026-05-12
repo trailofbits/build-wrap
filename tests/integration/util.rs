@@ -24,13 +24,6 @@ use std::{
 mod main_util;
 pub use main_util::*;
 
-#[ctor::ctor]
-fn initialize() {
-    unsafe {
-        env::set_var("CARGO_TERM_COLOR", "never");
-    }
-}
-
 #[must_use]
 pub fn build_with_build_wrap() -> Command {
     let build_wrap = env!("CARGO_BIN_EXE_build-wrap");
