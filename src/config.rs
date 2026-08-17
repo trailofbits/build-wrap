@@ -150,8 +150,8 @@ packages = ["svm-rs-builds"]
     #[test]
     fn missing_config() {
         let config = Config::load_from(Path::new("/nonexistent/config.toml"));
-        assert!(config.directories.is_empty());
-        assert!(config.packages.is_empty());
+        assert_eq!([] as [PathBuf; 0], config.directories.as_slice());
+        assert_eq!([] as [String; 0], config.packages.as_slice());
     }
 
     #[test]
@@ -161,8 +161,8 @@ packages = ["svm-rs-builds"]
         write(&path_buf, "").unwrap();
 
         let config = Config::load_from(&path_buf);
-        assert!(config.directories.is_empty());
-        assert!(config.packages.is_empty());
+        assert_eq!([] as [PathBuf; 0], config.directories.as_slice());
+        assert_eq!([] as [String; 0], config.packages.as_slice());
     }
 
     #[test]
@@ -179,7 +179,7 @@ packages = ["foo"]
         .unwrap();
 
         let config = Config::load_from(&path_buf);
-        assert!(config.directories.is_empty());
+        assert_eq!([] as [PathBuf; 0], config.directories.as_slice());
         assert_eq!(config.packages, vec!["foo"]);
     }
 
@@ -198,7 +198,7 @@ directories = ["/tmp/myproject"]
 
         let config = Config::load_from(&path_buf);
         assert_eq!(config.directories, vec![PathBuf::from("/tmp/myproject")]);
-        assert!(config.packages.is_empty());
+        assert_eq!([] as [String; 0], config.packages.as_slice());
     }
 
     #[test]
@@ -215,7 +215,7 @@ packages = ["foo"]
         .unwrap();
 
         let config = Config::load_from(&path_buf);
-        assert!(config.packages.is_empty());
+        assert_eq!([] as [String; 0], config.packages.as_slice());
     }
 
     #[test]

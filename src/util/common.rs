@@ -132,7 +132,7 @@ fn split_escaped(mut s: &str) -> Result<Vec<String>> {
     let mut v = vec![String::new()];
 
     while let Some(i) = s.find(|c: char| c.is_ascii_whitespace() || c == '\\') {
-        debug_assert!(!v.is_empty());
+        debug_assert_ne!([] as [String; 0], v.as_slice());
         // smoelius: Only the last string in `v` can be empty.
         debug_assert!(
             v.iter()
