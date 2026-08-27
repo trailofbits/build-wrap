@@ -18,16 +18,16 @@
     ],
     "bitflags": [
       {
-        "id": 51,
-        "kind": "team",
-        "login": "github:rust-lang-nursery:libs",
-        "name": "libs"
-      },
-      {
         "id": 3204,
         "kind": "user",
         "login": "KodrAus",
         "name": "Ashley Mannix"
+      },
+      {
+        "id": 55123,
+        "kind": "user",
+        "login": "rust-lang-owner",
+        "name": null
       }
     ],
     "cfg-if": [
@@ -125,12 +125,6 @@
       }
     ],
     "home": [
-      {
-        "id": 6202,
-        "kind": "user",
-        "login": "ehuss",
-        "name": "Eric Huss"
-      },
       {
         "id": 11164,
         "kind": "user",
@@ -453,12 +447,6 @@
       }
     ],
     "toml": [
-      {
-        "id": 6202,
-        "kind": "user",
-        "login": "ehuss",
-        "name": "Eric Huss"
-      },
       {
         "id": 6743,
         "kind": "user",
