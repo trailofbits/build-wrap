@@ -22,7 +22,7 @@ cargo_metadata = "0.23"
 serde = "1.0"
 serde_json = "1.0"
 snapbox = "1.2"
-supply_chain = "0.1"
+supply_chain = "0.2"
 
 [lints.clippy]
 pedantic = { level = "warn", priority = -1 }
