@@ -96,10 +96,7 @@ A linker replacement to help protect against malicious build scripts
         return;
     }
     let disabled = *DISABLED_RED;
-    let msg = result
-        .err()
-        .map(|error| format!(": {error}"))
-        .unwrap_or_default();
+    let msg = result.err().map_or_default(|error| format!(": {error}"));
     println!(
         r#"build-wrap is {disabled}{msg}
 
