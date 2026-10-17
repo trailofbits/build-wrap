@@ -57,7 +57,6 @@ jobs:
           rustup +nightly component add clippy
           cargo install cargo-dylint dylint-link || true
           cargo install cargo-supply-chain       || true
-          cargo install unset                    || true
 
       - name: Update
         if: ${{ runner.os == 'Linux' }}
@@ -83,7 +82,9 @@ jobs:
         run: cargo test --no-run
 
       - name: Test
-        run: cargo test --config "target.'cfg(all())'.runner = 'unset'"
+        run: |
+          unset CARGO_TERM_COLOR
+          cargo test
 
   all-checks:
     needs: [test]
